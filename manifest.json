@@ -2,15 +2,28 @@
   "name": "Emotional Support Assistant",
   "short_name": "Support Helper",
   "description": "Your personal companion for life's daily moments",
+  "id": "com.asherhoe.emotional_support_assistant",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fdf2f8",
   "theme_color": "#ec4899",
+  "categories": ["lifestyle", "health"],
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💝%3C/text%3E%3C/svg%3E",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
