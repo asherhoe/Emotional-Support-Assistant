@@ -1,7 +1,7 @@
 {
   "name": "Emotional Support Assistant",
   "short_name": "ESA",
-  "description": "A compassionate AI companion providing emotional support and mental wellness guidance",
+  "description": "A companion for life's wonderful memories",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -16,11 +16,11 @@
       "src": "./Item-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "./Item-512-maskable.png",
-      "sizes": "512x512",
+      "src": "./Item-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
@@ -29,6 +29,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "./Item-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
