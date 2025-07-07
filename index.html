@@ -14,195 +14,74 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ESA">
     
-    <!-- 内联CSS样式 - 避免外部依赖 -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #faf5ff 100%);
-            min-height: 100vh;
-            padding: 16px;
-        }
+        /* Tailwind-like classes */
+        .min-h-screen { min-height: 100vh; }
+        .bg-gradient-to-br { background: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+        .from-blue-50 { --tw-gradient-from: #eff6ff; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(239, 246, 255, 0)); }
+        .to-purple-50 { --tw-gradient-to: #faf5ff; }
+        .p-4 { padding: 1rem; }
+        .max-w-md { max-width: 28rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .flex { display: flex; }
+        .justify-end { justify-content: flex-end; }
+        .pt-4 { padding-top: 1rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .items-center { align-items: center; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+        .bg-white { background-color: #fff; }
+        .border { border-width: 1px; }
+        .border-pink-100 { border-color: #fce7f3; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .text-center { text-align: center; }
+        .w-12 { width: 3rem; }
+        .h-12 { height: 3rem; }
+        .text-pink-500 { color: #ec4899; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .font-bold { font-weight: 700; }
+        .text-gray-800 { color: #1f2937; }
+        .text-gray-600 { color: #4b5563; }
+        .w-full { width: 100%; }
+        .bg-red-500 { background-color: #ef4444; }
+        .hover\:bg-red-600:hover { background-color: #dc2626; }
+        .text-white { color: #fff; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .px-8 { padding-left: 2rem; padding-right: 2rem; }
+        .rounded-full { border-radius: 9999px; }
+        .border-none { border: none; }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .cursor-pointer { cursor: pointer; }
+        .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .duration-200 { transition-duration: 200ms; }
+        .hover\:scale-105:hover { transform: scale(1.05); }
+        .active\:scale-95:active { transform: scale(0.95); }
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .gap-4 { gap: 1rem; }
+        .bg-gradient-to-br { background: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+        .from-pink-50 { --tw-gradient-from: #fdf2f8; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(253, 242, 248, 0)); }
+        .to-rose-50 { --tw-gradient-to: #fff1f2; }
+        .p-4 { padding: 1rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .w-8 { width: 2rem; }
+        .h-8 { height: 2rem; }
+        .mr-3 { margin-right: 0.75rem; }
+        .font-semibold { font-weight: 600; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
         
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: flex-end;
-            padding-top: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .lang-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #fdf2f8 0%, #fef7f0 100%);
-            border: 1px solid #fce7f3;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .lang-btn:hover {
-            background: linear-gradient(135deg, #fce7f3 0%, #fed7e2 100%);
-        }
-        
-        .title-section {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        
-        .heart-icon {
-            width: 48px;
-            height: 48px;
-            color: #ec4899;
-            margin: 0 auto 8px;
-        }
-        
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-        
-        .subtitle {
-            color: #6b7280;
-        }
-        
-        .sos-section {
-            margin-bottom: 32px;
-        }
-        
-        .sos-btn {
-            width: 100%;
-            background: #ef4444;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            padding: 24px 32px;
-            border-radius: 9999px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .sos-btn:hover {
-            background: #dc2626;
-            transform: scale(1.05);
-        }
-        
-        .sos-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .features {
-            display: grid;
-            gap: 16px;
-        }
-        
-        .feature-card {
-            background: linear-gradient(135deg, #fdf2f8 0%, #fef7f0 100%);
-            border: 1px solid #fce7f3;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            background: linear-gradient(135deg, #fce7f3 0%, #fed7e2 100%);
-        }
-        
-        .feature-content {
-            display: flex;
-            align-items: center;
-        }
-        
-        .feature-icon {
-            width: 32px;
-            height: 32px;
-            color: #ec4899;
-            margin-right: 12px;
-        }
-        
-        .feature-title {
-            font-weight: 600;
-            color: #1f2937;
-        }
-        
-        .feature-desc {
-            font-size: 14px;
-            color: #6b7280;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 300px;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .modal-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            color: #1f2937;
-        }
-        
-        .modal-text {
-            color: #6b7280;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        
-        .modal-btn {
-            background: #ec4899;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
-        .modal-btn:hover {
-            background: #db2777;
-        }
-        
-        /* 照片视图样式 */
-        .photo-view {
-            display: none;
+        /* 全屏视图样式 */
+        .fullscreen-view {
             position: fixed;
             top: 0;
             left: 0;
@@ -210,6 +89,7 @@
             bottom: 0;
             background: black;
             z-index: 1000;
+            display: none;
             align-items: center;
             justify-content: center;
             flex-direction: column;
@@ -228,7 +108,7 @@
             border-radius: 12px;
         }
         
-        .photo-info {
+        .overlay-info {
             position: fixed;
             bottom: 80px;
             left: 0;
@@ -236,26 +116,26 @@
             text-align: center;
         }
         
-        .photo-info-content {
+        .overlay-content {
             background: rgba(0,0,0,0.7);
             margin: 0 20px;
             padding: 16px;
             border-radius: 8px;
         }
         
-        .photo-text {
+        .overlay-text {
             color: white;
             font-size: 18px;
             margin-bottom: 16px;
         }
         
-        .photo-controls {
+        .control-buttons {
             display: flex;
             gap: 12px;
             justify-content: center;
         }
         
-        .photo-btn {
+        .control-btn {
             background: white;
             color: black;
             border: none;
@@ -265,7 +145,7 @@
             font-weight: 600;
         }
         
-        .photo-nav {
+        .nav-btn {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
@@ -278,15 +158,10 @@
             font-size: 18px;
         }
         
-        .photo-nav.prev {
-            left: 20px;
-        }
+        .nav-btn.prev { left: 20px; }
+        .nav-btn.next { right: 20px; }
         
-        .photo-nav.next {
-            right: 20px;
-        }
-        
-        .photo-counter {
+        .counter {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -295,96 +170,145 @@
             padding: 8px 12px;
             border-radius: 8px;
         }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+        
+        .modal-text {
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .modal-btn {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 语言切换按钮 -->
-        <div class="header">
-            <button class="lang-btn" onclick="toggleLanguage()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="2" y1="12" x2="22" y2="12"/>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+        <div class="max-w-md mx-auto">
+            <!-- 语言切换按钮 -->
+            <div class="flex justify-end pt-4 mb-4">
+                <button onclick="toggleLanguage()" class="flex items-center space-x-2 bg-white border border-pink-100 px-3 py-2 rounded-lg shadow-sm cursor-pointer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="2" y1="12" x2="22" y2="12"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                    <span class="text-sm text-gray-600" id="langText">EN</span>
+                </button>
+            </div>
+
+            <!-- 标题 -->
+            <div class="text-center mb-8">
+                <svg class="w-12 h-12 text-pink-500 mx-auto mb-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
-                <span id="langText">EN</span>
-            </button>
-        </div>
-
-        <!-- 标题 -->
-        <div class="title-section">
-            <svg class="heart-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-            <h1 class="title" id="mainTitle">情绪支持助手</h1>
-            <p class="subtitle" id="mainSubtitle">你不是一个人，我们在这里陪伴你</p>
-        </div>
-
-        <!-- SOS 按钮 -->
-        <div class="sos-section">
-            <button class="sos-btn" onclick="startPhotoSlideshow()" id="sosButton">
-                🆘 紧急安抚
-            </button>
-        </div>
-
-        <!-- 功能卡片 -->
-        <div class="features">
-            <div class="feature-card" onclick="startPhotoSlideshow()">
-                <div class="feature-content">
-                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                        <circle cx="12" cy="13" r="4"/>
-                    </svg>
-                    <div>
-                        <div class="feature-title" id="photosTitle">安全照片</div>
-                        <div class="feature-desc" id="photosDesc">3 张照片</div>
-                    </div>
-                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2" id="mainTitle">情绪支持助手</h1>
+                <p class="text-gray-600" id="mainSubtitle">你不是一个人，我们在这里陪伴你</p>
             </div>
 
-            <div class="feature-card" onclick="showFeature('audio')">
-                <div class="feature-content">
-                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                        <line x1="12" y1="19" x2="12" y2="23"/>
-                        <line x1="8" y1="23" x2="16" y2="23"/>
-                    </svg>
-                    <div>
-                        <div class="feature-title" id="audioTitle">支持声音</div>
-                        <div class="feature-desc" id="audioDesc">0 段录音</div>
-                    </div>
-                </div>
+            <!-- SOS 按钮 -->
+            <div class="mb-8">
+                <button onclick="handleSOS()" class="w-full bg-red-500 hover:bg-red-600 text-white text-xl font-bold py-6 px-8 rounded-full border-none shadow-lg cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95" id="sosButton">
+                    🆘 紧急安抚
+                </button>
             </div>
 
-            <div class="feature-card" onclick="showMemories()">
-                <div class="feature-content">
-                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                    </svg>
-                    <div>
-                        <div class="feature-title" id="memoriesTitle">正面记忆</div>
-                        <div class="feature-desc" id="memoriesDesc">3 个回忆</div>
+            <!-- 功能卡片 -->
+            <div class="grid grid-cols-1 gap-4">
+                <div onclick="openPhotos()" class="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg transition-all">
+                    <div class="flex items-center">
+                        <svg class="w-8 h-8 text-pink-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                        <div>
+                            <h3 class="font-semibold text-gray-800" id="photosTitle">安全照片</h3>
+                            <p class="text-sm text-gray-600" id="photosDesc">3 张照片</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="showFeature('audio')" class="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg transition-all">
+                    <div class="flex items-center">
+                        <svg class="w-8 h-8 text-pink-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                        <div>
+                            <h3 class="font-semibold text-gray-800" id="audioTitle">支持声音</h3>
+                            <p class="text-sm text-gray-600" id="audioDesc">0 段录音</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="showMemories()" class="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg transition-all">
+                    <div class="flex items-center">
+                        <svg class="w-8 h-8 text-pink-500 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                        </svg>
+                        <div>
+                            <h3 class="font-semibold text-gray-800" id="memoriesTitle">正面记忆</h3>
+                            <p class="text-sm text-gray-600" id="memoriesDesc">3 个回忆</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 照片视图 -->
-    <div class="photo-view" id="photoView">
+    <!-- 全屏照片视图 -->
+    <div class="fullscreen-view" id="photoView">
         <div class="photo-container">
             <img class="photo-image" id="photoImage" src="" alt="">
         </div>
-        <div class="photo-counter" id="photoCounter">1 / 3</div>
-        <button class="photo-nav prev" onclick="prevPhoto()">←</button>
-        <button class="photo-nav next" onclick="nextPhoto()">→</button>
-        <div class="photo-info">
-            <div class="photo-info-content">
-                <p class="photo-text" id="photoText">和好朋友的合照</p>
-                <div class="photo-controls">
-                    <button class="photo-btn" onclick="stopSlideshow()" id="stopBtn">停止</button>
-                    <button class="photo-btn" onclick="stopSlideshow()" id="backBtn">返回主页</button>
+        <div class="counter" id="photoCounter">1 / 3</div>
+        <button class="nav-btn prev" onclick="prevPhoto()">←</button>
+        <button class="nav-btn next" onclick="nextPhoto()">→</button>
+        <div class="overlay-info">
+            <div class="overlay-content">
+                <p class="overlay-text" id="photoText">朋友合影</p>
+                <div class="control-buttons">
+                    <button class="control-btn" onclick="stopSlideshow()" id="stopBtn">停止</button>
+                    <button class="control-btn" onclick="stopSlideshow()" id="backBtn">返回主页</button>
                 </div>
             </div>
         </div>
@@ -400,23 +324,23 @@
     </div>
 
     <script>
-        // 当前语言和照片索引
+        // 全局变量
         let currentLanguage = 'zh';
         let currentPhotoIndex = 0;
         let slideshowInterval = null;
         
-        // 示例照片数据
+        // 示例照片数据 - 使用简单的彩色占位图
         const photos = [
             {
-                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZjk4YzIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZGNhZjkiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7mlYzlj4vlkIjkuInvvIE8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GcmllbmRzIFRvZ2V0aGVyITwvdGV4dD48L3N2Zz4=',
+                url: createPlaceholderImage('朋友合影', '#ff98c2'),
                 description: { zh: '和好朋友的合照', en: 'Photo with good friends' }
             },
             {
-                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM5M2M1ZmQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZGNhZjkiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7liJ3kuK3ml7blhYnvvIE8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TY2hvb2wgRGF5cyE8L3RleHQ+PC9zdmc+',
+                url: createPlaceholderImage('初中时光', '#93c5fd'),
                 description: { zh: '初中时光', en: 'Middle school days' }
             },
             {
-                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZGNhZjkiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmI3YzUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7muKnmmJrnmoTlm57lv4bvvIE8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5XYXJtIE1lbW9yaWVzITwvdGV4dD48L3N2Zz4=',
+                url: createPlaceholderImage('温暖回忆', '#fdcaf9'),
                 description: { zh: '温暖的回忆', en: 'Warm memories' }
             }
         ];
@@ -425,15 +349,23 @@
         const memories = [
             { 
                 title: { zh: '第一次获奖', en: 'First Award' }, 
-                content: { zh: '记得那天你特别开心，眼睛都在发光', en: 'Remember how happy you were that day, your eyes were shining' }
+                content: { zh: '记得那天你特别开心，眼睛都在发光。那是你第一次因为自己的努力被认可，那种成就感至今难忘。', en: 'Remember how happy you were that day, your eyes were shining. It was the first time you were recognized for your efforts, and that sense of achievement is unforgettable.' }
             },
             { 
                 title: { zh: '和朋友的午餐', en: 'Lunch with Friends' }, 
-                content: { zh: '那次聊天聊到忘记时间，你笑得特别灿烂', en: 'That time you chatted until you forgot the time, you smiled so brightly' }
+                content: { zh: '那次聊天聊到忘记时间，你笑得特别灿烂。和真正的朋友在一起，时间总是过得很快，那种纯真的快乐很珍贵。', en: 'That time you chatted until you forgot the time, you smiled so brightly. Time always passes quickly with true friends, and that pure happiness is precious.' }
             },
             { 
                 title: { zh: '克服困难', en: 'Overcoming Challenges' }, 
-                content: { zh: '你曾经觉得不可能的事情，最后都做到了', en: 'Things you once thought impossible, you eventually accomplished them all' }
+                content: { zh: '你曾经觉得不可能的事情，最后都做到了。每一次挑战都让你变得更强大，你的坚持和勇气值得赞扬。', en: 'Things you once thought impossible, you eventually accomplished them all. Every challenge makes you stronger, and your persistence and courage deserve praise.' }
+            },
+            { 
+                title: { zh: '家人的拥抱', en: 'Family Hug' }, 
+                content: { zh: '无论何时感到疲惫，家人的拥抱总能给你力量。那种无条件的爱和支持，是你最坚实的后盾。', en: 'Whenever you feel tired, family hugs always give you strength. That unconditional love and support is your strongest backing.' }
+            },
+            { 
+                title: { zh: '美丽的日落', en: 'Beautiful Sunset' }, 
+                content: { zh: '那次看日落时，你感受到了生活的美好。大自然的魅力让你暂时忘记了烦恼，内心充满了平静。', en: 'When you watched the sunset, you felt the beauty of life. The charm of nature made you temporarily forget your worries and filled your heart with peace.' }
             }
         ];
         
@@ -448,7 +380,7 @@
                 audioTitle: '支持声音',
                 audioDesc: '0 段录音',
                 memoriesTitle: '正面记忆',
-                memoriesDesc: '3 个回忆',
+                memoriesDesc: '5 个回忆',
                 modalTitle: '功能开发中',
                 modalText: '此功能正在开发中，敬请期待！',
                 langText: 'EN',
@@ -464,7 +396,7 @@
                 audioTitle: 'Support Sounds',
                 audioDesc: '0 audios',
                 memoriesTitle: 'Positive Memories',
-                memoriesDesc: '3 memories',
+                memoriesDesc: '5 memories',
                 modalTitle: 'Feature in Development',
                 modalText: 'This feature is under development, please stay tuned!',
                 langText: '中文',
@@ -472,6 +404,31 @@
                 backHome: 'Back Home'
             }
         };
+
+        // 创建占位图片
+        function createPlaceholderImage(text, color) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 600;
+            const ctx = canvas.getContext('2d');
+            
+            // 创建渐变背景
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, '#fef7f0');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 添加文字
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 48px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+            
+            return canvas.toDataURL();
+        }
 
         // 切换语言
         function toggleLanguage() {
@@ -494,13 +451,17 @@
             document.getElementById('memoriesDesc').textContent = t.memoriesDesc;
             document.getElementById('langText').textContent = t.langText;
             
-            // 更新照片文本
+            // 更新按钮文本
             if (document.getElementById('photoView').style.display === 'flex') {
-                updatePhotoText();
-                // 更新按钮文本
                 document.getElementById('stopBtn').textContent = t.stop;
                 document.getElementById('backBtn').textContent = t.backHome;
+                updatePhotoText();
             }
+        }
+
+        // SOS按钮处理
+        function handleSOS() {
+            startPhotoSlideshow();
         }
 
         // 开始照片幻灯片
@@ -509,10 +470,15 @@
             showPhoto();
             document.getElementById('photoView').style.display = 'flex';
             
-            // 自动切换
+            // 自动切换每10秒
             slideshowInterval = setInterval(() => {
                 nextPhoto();
-            }, 10000); // 10秒切换一次
+            }, 10000);
+        }
+
+        // 打开照片功能
+        function openPhotos() {
+            startPhotoSlideshow();
         }
 
         // 显示当前照片
