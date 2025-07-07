@@ -1,8 +1,8 @@
 {
   "name": "Emotional Support Assistant",
   "short_name": "ESA",
-  "description": "Your personal companion for life's wonderful memories",
-  "start_url": "/?source=pwa",
+  "description": "A personal companion for collecting and revisiting life's meaningful moments",
+  "start_url": "/index.html?source=pwa",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -11,17 +11,17 @@
   "categories": ["lifestyle", "health", "wellness"],
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/Non-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/Non-512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/maskable-icon-512.png",
+      "src": "/Non-512-match86.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -44,22 +44,22 @@
       "name": "SOS Emergency Comfort",
       "short_name": "SOS",
       "description": "Quickly launch emergency comfort",
-      "url": "/?sos=true",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "/index.html?sos=true",
+      "icons": [{ "src": "/Non-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Safe Photos",
       "short_name": "Photos",
       "description": "View safe photos",
-      "url": "/?view=photos",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "/index.html?view=photos",
+      "icons": [{ "src": "/Non-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Warm Sounds",
       "short_name": "Audios",
       "description": "Play warm sounds",
-      "url": "/?view=audios",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "/index.html?view=audios",
+      "icons": [{ "src": "/Non-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ],
   "display_override": ["standalone", "minimal-ui"],
