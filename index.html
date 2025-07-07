@@ -199,6 +199,102 @@
         .modal-btn:hover {
             background: #db2777;
         }
+        
+        /* 照片视图样式 */
+        .photo-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: black;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .photo-container {
+            position: relative;
+            max-width: 90%;
+            max-height: 80%;
+        }
+        
+        .photo-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        .photo-info {
+            position: fixed;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        
+        .photo-info-content {
+            background: rgba(0,0,0,0.7);
+            margin: 0 20px;
+            padding: 16px;
+            border-radius: 8px;
+        }
+        
+        .photo-text {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        
+        .photo-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .photo-btn {
+            background: white;
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .photo-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .photo-nav.prev {
+            left: 20px;
+        }
+        
+        .photo-nav.next {
+            right: 20px;
+        }
+        
+        .photo-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -226,14 +322,14 @@
 
         <!-- SOS 按钮 -->
         <div class="sos-section">
-            <button class="sos-btn" onclick="showSOS()" id="sosButton">
+            <button class="sos-btn" onclick="startPhotoSlideshow()" id="sosButton">
                 🆘 紧急安抚
             </button>
         </div>
 
         <!-- 功能卡片 -->
         <div class="features">
-            <div class="feature-card" onclick="showFeature('photos')">
+            <div class="feature-card" onclick="startPhotoSlideshow()">
                 <div class="feature-content">
                     <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
@@ -261,7 +357,7 @@
                 </div>
             </div>
 
-            <div class="feature-card" onclick="showFeature('memories')">
+            <div class="feature-card" onclick="showMemories()">
                 <div class="feature-content">
                     <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
@@ -275,18 +371,70 @@
         </div>
     </div>
 
+    <!-- 照片视图 -->
+    <div class="photo-view" id="photoView">
+        <div class="photo-container">
+            <img class="photo-image" id="photoImage" src="" alt="">
+        </div>
+        <div class="photo-counter" id="photoCounter">1 / 3</div>
+        <button class="photo-nav prev" onclick="prevPhoto()">←</button>
+        <button class="photo-nav next" onclick="nextPhoto()">→</button>
+        <div class="photo-info">
+            <div class="photo-info-content">
+                <p class="photo-text" id="photoText">和好朋友的合照</p>
+                <div class="photo-controls">
+                    <button class="photo-btn" onclick="stopSlideshow()">停止</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 模态框 -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <div class="modal-title" id="modalTitle">功能开发中</div>
-            <div class="modal-text" id="modalText">此功能正在开发中，敬请期待！</div>
+            <div class="modal-title" id="modalTitle">温暖回忆</div>
+            <div class="modal-text" id="modalText">记得那天你特别开心，眼睛都在发光</div>
             <button class="modal-btn" onclick="closeModal()">确定</button>
         </div>
     </div>
 
     <script>
-        // 当前语言
+        // 当前语言和照片索引
         let currentLanguage = 'zh';
+        let currentPhotoIndex = 0;
+        let slideshowInterval = null;
+        
+        // 示例照片数据
+        const photos = [
+            {
+                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZjk4YzIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZGNhZjkiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7mlYzlj4vlkIjkuInvvIE8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5GcmllbmRzIFRvZ2V0aGVyITwvdGV4dD48L3N2Zz4=',
+                description: { zh: '和好朋友的合照', en: 'Photo with good friends' }
+            },
+            {
+                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM5M2M1ZmQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZGNhZjkiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7liJ3kuK3ml7blhYnvvIE8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TY2hvb2wgRGF5cyE8L3RleHQ+PC9zdmc+',
+                description: { zh: '初中时光', en: 'Middle school days' }
+            },
+            {
+                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZGNhZjkiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmI3YzUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7muKnmmJrnmoTlm57lv4bvvIE8L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI1NSUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5XYXJtIE1lbW9yaWVzITwvdGV4dD48L3N2Zz4=',
+                description: { zh: '温暖的回忆', en: 'Warm memories' }
+            }
+        ];
+        
+        // 回忆数据
+        const memories = [
+            { 
+                title: { zh: '第一次获奖', en: 'First Award' }, 
+                content: { zh: '记得那天你特别开心，眼睛都在发光', en: 'Remember how happy you were that day, your eyes were shining' }
+            },
+            { 
+                title: { zh: '和朋友的午餐', en: 'Lunch with Friends' }, 
+                content: { zh: '那次聊天聊到忘记时间，你笑得特别灿烂', en: 'That time you chatted until you forgot the time, you smiled so brightly' }
+            },
+            { 
+                title: { zh: '克服困难', en: 'Overcoming Challenges' }, 
+                content: { zh: '你曾经觉得不可能的事情，最后都做到了', en: 'Things you once thought impossible, you eventually accomplished them all' }
+            }
+        ];
         
         // 多语言文本
         const texts = {
@@ -302,7 +450,8 @@
                 memoriesDesc: '3 个回忆',
                 modalTitle: '功能开发中',
                 modalText: '此功能正在开发中，敬请期待！',
-                langText: 'EN'
+                langText: 'EN',
+                stop: '停止'
             },
             en: {
                 title: 'Emotional Support Assistant',
@@ -316,7 +465,8 @@
                 memoriesDesc: '3 memories',
                 modalTitle: 'Feature in Development',
                 modalText: 'This feature is under development, please stay tuned!',
-                langText: '中文'
+                langText: '中文',
+                stop: 'Stop'
             }
         };
 
@@ -340,13 +490,65 @@
             document.getElementById('memoriesTitle').textContent = t.memoriesTitle;
             document.getElementById('memoriesDesc').textContent = t.memoriesDesc;
             document.getElementById('langText').textContent = t.langText;
+            
+            // 更新照片文本
+            if (document.getElementById('photoView').style.display === 'flex') {
+                updatePhotoText();
+            }
         }
 
-        // 显示SOS功能
-        function showSOS() {
-            const t = texts[currentLanguage];
-            document.getElementById('modalTitle').textContent = t.modalTitle;
-            document.getElementById('modalText').textContent = t.modalText;
+        // 开始照片幻灯片
+        function startPhotoSlideshow() {
+            currentPhotoIndex = 0;
+            showPhoto();
+            document.getElementById('photoView').style.display = 'flex';
+            
+            // 自动切换
+            slideshowInterval = setInterval(() => {
+                nextPhoto();
+            }, 10000); // 10秒切换一次
+        }
+
+        // 显示当前照片
+        function showPhoto() {
+            const photo = photos[currentPhotoIndex];
+            document.getElementById('photoImage').src = photo.url;
+            document.getElementById('photoCounter').textContent = `${currentPhotoIndex + 1} / ${photos.length}`;
+            updatePhotoText();
+        }
+
+        // 更新照片文本
+        function updatePhotoText() {
+            const photo = photos[currentPhotoIndex];
+            document.getElementById('photoText').textContent = photo.description[currentLanguage];
+        }
+
+        // 下一张照片
+        function nextPhoto() {
+            currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+            showPhoto();
+        }
+
+        // 上一张照片
+        function prevPhoto() {
+            currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+            showPhoto();
+        }
+
+        // 停止幻灯片
+        function stopSlideshow() {
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+                slideshowInterval = null;
+            }
+            document.getElementById('photoView').style.display = 'none';
+        }
+
+        // 显示回忆
+        function showMemories() {
+            const memory = memories[Math.floor(Math.random() * memories.length)];
+            document.getElementById('modalTitle').textContent = memory.title[currentLanguage];
+            document.getElementById('modalText').textContent = memory.content[currentLanguage];
             document.getElementById('modal').style.display = 'flex';
         }
 
