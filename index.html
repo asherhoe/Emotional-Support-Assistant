@@ -14,609 +14,367 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ESA">
     
-    <!-- React 和 Babel 库 -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 内联CSS样式 - 避免外部依赖 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #faf5ff 100%);
+            min-height: 100vh;
+            padding: 16px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #fdf2f8 0%, #fef7f0 100%);
+            border: 1px solid #fce7f3;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn:hover {
+            background: linear-gradient(135deg, #fce7f3 0%, #fed7e2 100%);
+        }
+        
+        .title-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .heart-icon {
+            width: 48px;
+            height: 48px;
+            color: #ec4899;
+            margin: 0 auto 8px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+        }
+        
+        .sos-section {
+            margin-bottom: 32px;
+        }
+        
+        .sos-btn {
+            width: 100%;
+            background: #ef4444;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 24px 32px;
+            border-radius: 9999px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .sos-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+        
+        .sos-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .features {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fef7f0 100%);
+            border: 1px solid #fce7f3;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #fce7f3 0%, #fed7e2 100%);
+        }
+        
+        .feature-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            color: #ec4899;
+            margin-right: 12px;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 300px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+        
+        .modal-text {
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .modal-btn {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .modal-btn:hover {
+            background: #db2777;
+        }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="container">
+        <!-- 语言切换按钮 -->
+        <div class="header">
+            <button class="lang-btn" onclick="toggleLanguage()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+                <span id="langText">EN</span>
+            </button>
+        </div>
 
-    <script type="text/babel">
-        const { useState, useRef } = React;
-
-        // 简单的SVG图标组件
-        const Heart = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <!-- 标题 -->
+        <div class="title-section">
+            <svg class="heart-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
-        );
+            <h1 class="title" id="mainTitle">情绪支持助手</h1>
+            <p class="subtitle" id="mainSubtitle">你不是一个人，我们在这里陪伴你</p>
+        </div>
 
-        const Camera = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-            </svg>
-        );
+        <!-- SOS 按钮 -->
+        <div class="sos-section">
+            <button class="sos-btn" onclick="showSOS()" id="sosButton">
+                🆘 紧急安抚
+            </button>
+        </div>
 
-        const Mic = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/>
-                <line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-        );
+        <!-- 功能卡片 -->
+        <div class="features">
+            <div class="feature-card" onclick="showFeature('photos')">
+                <div class="feature-content">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    <div>
+                        <div class="feature-title" id="photosTitle">安全照片</div>
+                        <div class="feature-desc" id="photosDesc">3 张照片</div>
+                    </div>
+                </div>
+            </div>
 
-        const MessageCircle = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
-        );
+            <div class="feature-card" onclick="showFeature('audio')">
+                <div class="feature-content">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    <div>
+                        <div class="feature-title" id="audioTitle">支持声音</div>
+                        <div class="feature-desc" id="audioDesc">0 段录音</div>
+                    </div>
+                </div>
+            </div>
 
-        const Globe = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-        );
+            <div class="feature-card" onclick="showFeature('memories')">
+                <div class="feature-content">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                    </svg>
+                    <div>
+                        <div class="feature-title" id="memoriesTitle">正面记忆</div>
+                        <div class="feature-desc" id="memoriesDesc">3 个回忆</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // 新增文档图标
-        const FileText = ({ className }) => (
-          <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14,2 14,8 20,8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <line x1="10" y1="9" x2="8" y2="9"/>
-          </svg>
-        );
+    <!-- 模态框 -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">功能开发中</div>
+            <div class="modal-text" id="modalText">此功能正在开发中，敬请期待！</div>
+            <button class="modal-btn" onclick="closeModal()">确定</button>
+        </div>
+    </div>
 
-        // 新增拖拽手柄图标
-        const DragHandle = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
-        );
-
-        const EmotionalSupportApp = () => {
-          const [currentView, setCurrentView] = useState('main');
-          const [sosMode, setSosMode] = useState('photo');
-          const [mixedMode, setMixedMode] = useState('photo-audio'); // 'photo-audio' 或 'memory-audio'
-          const [currentIndex, setCurrentIndex] = useState(0);
-          const [language, setLanguage] = useState('zh');
-          const [photoDuration, setPhotoDuration] = useState(12);
-          const [uploadedAudios, setUploadedAudios] = useState([]);
-          const [uploadedPhotos, setUploadedPhotos] = useState([]);
-          const [defaultPhotos, setDefaultPhotos] = useState([
-            { 
-              id: 1, 
-              url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '和好朋友的合照', en: 'Photo with good friends' },
-              isDefault: true
-            },
-            { 
-              id: 2, 
-              url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '初中时光', en: 'Middle school days' },
-              isDefault: true
-            },
-            { 
-              id: 3, 
-              url: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '温暖的回忆', en: 'Warm memories' },
-              isDefault: true
-            }
-          ]);
-          const [defaultMemories, setDefaultMemories] = useState([
-            { 
-              id: 1, 
-              title: { zh: '第一次获奖', en: 'First Award' }, 
-              content: { zh: '记得那天你特别开心，眼睛都在发光', en: 'Remember how happy you were that day, your eyes were shining' },
-              isDefault: true
-            },
-            { 
-              id: 2, 
-              title: { zh: '和朋友的午餐', en: 'Lunch with Friends' }, 
-              content: { zh: '那次聊天聊到忘记时间，你笑得特别灿烂', en: 'That time you chatted until you forgot the time, you smiled so brightly' },
-              isDefault: true
-            },
-            { 
-              id: 3, 
-              title: { zh: '克服困难', en: 'Overcoming Challenges' }, 
-              content: { zh: '你曾经觉得不可能的事情，最后都做到了', en: 'Things you once thought impossible, you eventually accomplished them all' },
-              isDefault: true
-            }
-          ]);
-          const [notepadContent, setNotepadContent] = useState('');
-          const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-          // 新增拖拽状态
-          const [draggedItem, setDraggedItem] = useState(null);
-          const [dragOverIndex, setDragOverIndex] = useState(null);
-          const intervalRef = useRef(null);
-          const audioRef = useRef(null);
-
-          // 多语言文本
-          const texts = {
+    <script>
+        // 当前语言
+        let currentLanguage = 'zh';
+        
+        // 多语言文本
+        const texts = {
             zh: {
-              title: '情绪支持助手',
-              subtitle: '你不是一个人，我们在这里陪伴你',
-              sosButton: '🆘 紧急安抚',
-              photoMode: '📸 安全照片',
-              audioMode: '🎵 温暖声音',
-              messageMode: '💭 正面记忆',
-              mixedMode: '🔄 混合模式',
-              photoAudioMode: '📸🎵 照片+音乐',
-              memoryAudioMode: '💭🎵 文字+音乐',
-              safePhotos: '安全照片',
-              supportSounds: '支持声音',
-              positiveMemories: '正面记忆',
-              photosCount: '张照片',
-              audiosCount: '段录音',
-              memoriesCount: '个回忆',
-              stop: '停止',
-              back: '← 返回',
-              yourMemories: '你的美好回忆',
-              returnHome: '返回主页',
-              photoDuration: '照片停留时间',
-              seconds: '秒',
-              minute: '分钟',
-              minutes: '分钟',
-              permanent: '永久',
-              photoSettings: '照片设置',
-              replay: '重播',
-              pause: '暂停',
-              resume: '继续'
+                title: '情绪支持助手',
+                subtitle: '你不是一个人，我们在这里陪伴你',
+                sosButton: '🆘 紧急安抚',
+                photosTitle: '安全照片',
+                photosDesc: '3 张照片',
+                audioTitle: '支持声音',
+                audioDesc: '0 段录音',
+                memoriesTitle: '正面记忆',
+                memoriesDesc: '3 个回忆',
+                modalTitle: '功能开发中',
+                modalText: '此功能正在开发中，敬请期待！',
+                langText: 'EN'
             },
             en: {
-              title: 'Emotional Support Assistant',
-              subtitle: 'You are not alone, we are here with you',
-              sosButton: '🆘 Emergency Comfort',
-              photoMode: '📸 Safe Photos',
-              audioMode: '🎵 Warm Sounds',
-              messageMode: '💭 Positive Memories',
-              mixedMode: '🔄 Mixed Mode',
-              photoAudioMode: '📸🎵 Photo+Music',
-              memoryAudioMode: '💭🎵 Text+Music',
-              safePhotos: 'Safe Photos',
-              supportSounds: 'Support Sounds',
-              positiveMemories: 'Positive Memories',
-              photosCount: 'photos',
-              audiosCount: 'audios',
-              memoriesCount: 'memories',
-              stop: 'Stop',
-              back: '← Back',
-              yourMemories: 'Your Beautiful Memories',
-              returnHome: 'Return Home',
-              photoDuration: 'Photo Duration',
-              seconds: 'seconds',
-              minute: 'minute',
-              minutes: 'minutes',
-              permanent: 'Permanent',
-              photoSettings: 'Photo Settings',
-              replay: 'Replay',
-              pause: 'Pause',
-              resume: 'Resume'
+                title: 'Emotional Support Assistant',
+                subtitle: 'You are not alone, we are here with you',
+                sosButton: '🆘 Emergency Comfort',
+                photosTitle: 'Safe Photos',
+                photosDesc: '3 photos',
+                audioTitle: 'Support Sounds',
+                audioDesc: '0 audios',
+                memoriesTitle: 'Positive Memories',
+                memoriesDesc: '3 memories',
+                modalTitle: 'Feature in Development',
+                modalText: 'This feature is under development, please stay tuned!',
+                langText: '中文'
             }
-          };
-
-          const t = texts[language];
-
-          // 固定的示例数据 - 现在使用state管理
-          // 合并默认照片和用户上传的照片
-          const allPhotos = [...defaultPhotos, ...uploadedPhotos];
-
-          const defaultMemoryData = defaultMemories;
-
-          // 合并默认回忆和Notepad内容
-          const allMemories = notepadContent.trim() ? 
-            [...defaultMemoryData, {
-              id: 'notepad',
-              title: { zh: '我的心灵笔记', en: 'My Heart Notes' },
-              content: { zh: notepadContent, en: notepadContent },
-              isNotepad: true
-            }] : defaultMemoryData;
-
-          // 新增拖拽排序功能 - 通用版本
-          const handleDragStart = (e, index, type) => {
-            setDraggedItem({ index, type });
-            e.dataTransfer.effectAllowed = 'move';
-          };
-
-          const handleDragOver = (e, index) => {
-            e.preventDefault();
-            setDragOverIndex(index);
-          };
-
-          const handleDragLeave = () => {
-            setDragOverIndex(null);
-          };
-
-          const handleDrop = (e, dropIndex, type) => {
-            e.preventDefault();
-            if (draggedItem !== null && draggedItem.index !== dropIndex && draggedItem.type === type) {
-              if (type === 'audio') {
-                const newAudios = [...uploadedAudios];
-                const draggedAudio = newAudios[draggedItem.index];
-                newAudios.splice(draggedItem.index, 1);
-                newAudios.splice(dropIndex, 0, draggedAudio);
-                setUploadedAudios(newAudios);
-              } else if (type === 'photo') {
-                const newPhotos = [...allPhotos];
-                const draggedPhoto = newPhotos[draggedItem.index];
-                newPhotos.splice(draggedItem.index, 1);
-                newPhotos.splice(dropIndex, 0, draggedPhoto);
-                // 分离默认和用户照片
-                const defaultPhotos = newPhotos.filter(p => p.isDefault);
-                const userPhotos = newPhotos.filter(p => !p.isDefault);
-                setUploadedPhotos(userPhotos);
-              } else if (type === 'memory') {
-                const newMemories = [...allMemories];
-                const draggedMemory = newMemories[draggedItem.index];
-                newMemories.splice(draggedItem.index, 1);
-                newMemories.splice(dropIndex, 0, draggedMemory);
-                // 分离默认和用户回忆
-                const userMemories = newMemories.filter(m => !m.isDefault);
-                setUploadedMemories(userMemories);
-              }
-            }
-            setDraggedItem(null);
-            setDragOverIndex(null);
-          };
-
-          const handleDragEnd = () => {
-            setDraggedItem(null);
-            setDragOverIndex(null);
-          };
-
-          // 音频播放控制函数
-          const playAudio = (audioUrl) => {
-            if (audioRef.current) {
-              audioRef.current.src = audioUrl;
-              audioRef.current.play().then(() => {
-                setIsAudioPlaying(true);
-              }).catch(err => {
-                alert(language === 'zh' ? '播放失败，请检查音频格式' : 'Playback failed, check audio format');
-              });
-            }
-          };
-
-          const pauseAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              setIsAudioPlaying(false);
-            }
-          };
-
-          const resumeAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.play().then(() => {
-                setIsAudioPlaying(true);
-              });
-            }
-          };
-
-          const stopAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              audioRef.current.currentTime = 0;
-              setIsAudioPlaying(false);
-            }
-          };
-
-          // SOS按钮功能
-          const handleSOS = () => {
-            setCurrentIndex(0);
-            
-            if (sosMode === 'photo') {
-              startPhotoSlideshow();
-            } else if (sosMode === 'audio') {
-              if (uploadedAudios.length > 0) {
-                setCurrentView('audio');
-                // 最小延迟启动播放
-                setTimeout(() => {
-                  const firstAudio = uploadedAudios[0];
-                  if (firstAudio && audioRef.current) {
-                    audioRef.current.src = firstAudio.audioUrl;
-                    audioRef.current.play().then(() => {
-                      setIsAudioPlaying(true);
-                    }).catch(err => {
-                      console.log('初始播放失败，重试:', err);
-                      setTimeout(() => {
-                        audioRef.current.play();
-                      }, 50);
-                    });
-                  }
-                }, 50); // 减少到最小延迟
-              } else {
-                setCurrentView('audio');
-              }
-            } else if (sosMode === 'message') {
-              if (allMemories.length > 0) {
-                setCurrentView('memories-slideshow');
-              } else {
-                setCurrentView('memories');
-              }
-            } else if (sosMode === 'mixed') {
-              // 根据选择的混合模式启动
-              if (mixedMode === 'photo-audio') {
-                if (allPhotos.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-photo-audio');
-                  // 启动照片幻灯片和音乐播放
-                  if (photoDuration > 0) {
-                    intervalRef.current = setInterval(() => {
-                      setCurrentIndex(prev => (prev + 1) % allPhotos.length);
-                    }, photoDuration * 1000);
-                  }
-                  // 启动音乐播放
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      audioRef.current.src = firstAudio.audioUrl;
-                      audioRef.current.play().then(() => {
-                        setIsAudioPlaying(true);
-                      }).catch(err => {
-                        console.log('音乐播放失败，重试:', err);
-                        setTimeout(() => {
-                          audioRef.current.play();
-                        }, 50);
-                      });
-                    }
-                  }, 50);
-                } else {
-                  alert(language === 'zh' ? '需要同时有照片和音频文件才能使用此模式' : 'Need both photos and audio files to use this mode');
-                }
-              } else if (mixedMode === 'memory-audio') {
-                if (allMemories.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-memory-audio');
-                  // 启动音乐播放
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      audioRef.current.src = firstAudio.audioUrl;
-                      audioRef.current.play().then(() => {
-                        setIsAudioPlaying(true);
-                      }).catch(err => {
-                        console.log('音乐播放失败，重试:', err);
-                        setTimeout(() => {
-                          audioRef.current.play();
-                        }, 50);
-                      });
-                    }
-                  }, 50);
-                } else {
-                  alert(language === 'zh' ? '需要同时有回忆和音频文件才能使用此模式' : 'Need both memories and audio files to use this mode');
-                }
-              }
-            }
-          };
-
-          // 播放下一首音频 - 优化为最快切换
-          const playNextAudio = () => {
-            if (uploadedAudios.length > 1) {
-              const nextIndex = (currentIndex + 1) % uploadedAudios.length;
-              setCurrentIndex(nextIndex);
-              const nextAudio = uploadedAudios[nextIndex];
-              if (nextAudio && audioRef.current) {
-                // 立即切换，无延迟
-                audioRef.current.src = nextAudio.audioUrl;
-                audioRef.current.play().catch(err => {
-                  console.log('播放失败，尝试重新播放:', err);
-                  // 如果失败，立即重试
-                  setTimeout(() => {
-                    audioRef.current.play();
-                  }, 50);
-                });
-              }
-            } else if (uploadedAudios.length === 1) {
-              // 如果只有一首歌，立即重新播放
-              if (audioRef.current) {
-                audioRef.current.currentTime = 0;
-                audioRef.current.play();
-              }
-            }
-          };
-
-          const startPhotoSlideshow = () => {
-            setCurrentView('slideshow');
-            if (photoDuration > 0) {
-              intervalRef.current = setInterval(() => {
-                setCurrentIndex(prev => (prev + 1) % allPhotos.length);
-              }, photoDuration * 1000);
-            }
-          };
-
-          const stopSOS = () => {
-            if (intervalRef.current) {
-              clearInterval(intervalRef.current);
-            }
-            // 确保完全停止音频并重置状态
-            if (audioRef.current) {
-              audioRef.current.pause();
-              audioRef.current.currentTime = 0;
-              setIsAudioPlaying(false);
-            }
-            setCurrentView('main');
-          };
-
-          // 主界面
-          if (currentView === 'main') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-                <div className="max-w-md mx-auto">
-                  {/* 语言切换按钮 */}
-                  <div className="flex justify-end pt-4 mb-4">
-                    <button
-                      onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
-                      className="flex items-center space-x-2 bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 px-3 py-2 rounded-lg shadow-sm hover:from-pink-100 hover:to-rose-100"
-                    >
-                      <Globe className="w-4 h-4 text-gray-600" />
-                      <span className="text-sm text-gray-600">
-                        {language === 'zh' ? 'EN' : '中文'}
-                      </span>
-                    </button>
-                  </div>
-
-                  {/* 标题 */}
-                  <div className="text-center mb-8">
-                    <Heart className="w-12 h-12 text-pink-500 mx-auto mb-2" />
-                    <h1 className="text-2xl font-bold text-gray-800 mb-2">{t.title}</h1>
-                    <p className="text-gray-600">{t.subtitle}</p>
-                  </div>
-
-                  {/* SOS 按钮 */}
-                  <div className="mb-8">
-                    <button
-                      onClick={handleSOS}
-                      className="w-full bg-red-500 hover:bg-red-600 text-white text-xl font-bold py-6 px-8 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95"
-                    >
-                      {t.sosButton}
-                    </button>
-                    
-                    {/* SOS 模式选择 */}
-                    <div className="mt-4 grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => setSosMode('photo')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'photo' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.photoMode}
-                      </button>
-                      <button
-                        onClick={() => setSosMode('audio')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'audio' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.audioMode}
-                      </button>
-                      <button
-                        onClick={() => setSosMode('message')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'message' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.messageMode}
-                      </button>
-                      <button
-                        onClick={() => setSosMode('mixed')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'mixed' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.mixedMode}
-                      </button>
-                    </div>
-
-                    {/* 混合模式的子选项 */}
-                    {sosMode === 'mixed' && (
-                      <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
-                        <p className="text-sm text-gray-700 mb-3 text-center font-medium">
-                          {language === 'zh' ? '选择混合模式类型:' : 'Choose Mixed Mode Type:'}
-                        </p>
-                        <div className="grid grid-cols-1 gap-2">
-                          <button
-                            onClick={() => setMixedMode('photo-audio')}
-                            className={`py-3 px-4 rounded-lg text-sm transition-colors ${mixedMode === 'photo-audio' ? 'bg-purple-500 text-white' : 'bg-white border border-purple-200 text-gray-700 hover:bg-purple-50'}`}
-                          >
-                            {t.photoAudioMode}
-                            <p className="text-xs mt-1 opacity-80">
-                              {language === 'zh' ? '同时播放照片幻灯片和背景音乐' : 'Play photo slideshow with background music'}
-                            </p>
-                          </button>
-                          <button
-                            onClick={() => setMixedMode('memory-audio')}
-                            className={`py-3 px-4 rounded-lg text-sm transition-colors ${mixedMode === 'memory-audio' ? 'bg-purple-500 text-white' : 'bg-white border border-purple-200 text-gray-700 hover:bg-purple-50'}`}
-                          >
-                            {t.memoryAudioMode}
-                            <p className="text-xs mt-1 opacity-80">
-                              {language === 'zh' ? '显示文字回忆并播放背景音乐' : 'Show text memories with background music'}
-                            </p>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 设置区域 */}
-                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md mb-6">
-                    <h3 className="font-semibold text-gray-800 mb-4 text-center">{t.photoSettings}</h3>
-                    
-                    <div>
-                      <p className="text-sm text-gray-600 mb-2">{t.photoDuration}:</p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { value: 10, label: `10 ${t.seconds}` },
-                          { value: 20, label: `20 ${t.seconds}` },
-                          { value: 60, label: `1 ${t.minute}` },
-                          { value: 300, label: `5 ${t.minutes}` },
-                          { value: 1800, label: `30 ${t.minutes}` },
-                          { value: 0, label: t.permanent }
-                        ].map(option => (
-                          <button
-                            key={option.value}
-                            onClick={() => setPhotoDuration(option.value)}
-                            className={`py-2 px-2 rounded-lg text-xs transition-colors ${
-                              photoDuration === option.value 
-                                ? 'bg-blue-500 text-white' 
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 功能卡片 */}
-                  <div className="grid grid-cols-1 gap-4">
-                    <div 
-                      onClick={() => setCurrentView('photos')}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
-                    >
-                      <div className="flex items-center">
-                        <Camera className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{t.safePhotos}</h3>
-                          <p className="text-sm text-gray-600">{allPhotos.length} {t.photosCount}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div 
-                      onClick={() => setCurrentView('audios')}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
-                    >
-                      <div className="flex items-center">
-                        <Mic className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{t.supportSounds}</h3>
-                          <p className="text-sm text-gray-600">{uploadedAudios.length} {t.audiosCount}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div 
-                      onClick={() => setCurrentView('memories')}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
-                    >
-                      <div className="flex items-center">
-                        <MessageCircle className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{t.positiveMemories}</h3>
-                          <p className="text-sm text-gray-600">{allMemories.length} {t.memoriesCount}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          // 其他视图代码在这里继续...
-          return <div>Loading...</div>;
         };
 
-        ReactDOM.render(React.createElement(EmotionalSupportApp), document.getElementById('root'));
+        // 切换语言
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'zh' ? 'en' : 'zh';
+            updateLanguage();
+        }
+
+        // 更新语言显示
+        function updateLanguage() {
+            const t = texts[currentLanguage];
+            
+            document.getElementById('mainTitle').textContent = t.title;
+            document.getElementById('mainSubtitle').textContent = t.subtitle;
+            document.getElementById('sosButton').textContent = t.sosButton;
+            document.getElementById('photosTitle').textContent = t.photosTitle;
+            document.getElementById('photosDesc').textContent = t.photosDesc;
+            document.getElementById('audioTitle').textContent = t.audioTitle;
+            document.getElementById('audioDesc').textContent = t.audioDesc;
+            document.getElementById('memoriesTitle').textContent = t.memoriesTitle;
+            document.getElementById('memoriesDesc').textContent = t.memoriesDesc;
+            document.getElementById('langText').textContent = t.langText;
+        }
+
+        // 显示SOS功能
+        function showSOS() {
+            const t = texts[currentLanguage];
+            document.getElementById('modalTitle').textContent = t.modalTitle;
+            document.getElementById('modalText').textContent = t.modalText;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // 显示功能
+        function showFeature(type) {
+            const t = texts[currentLanguage];
+            document.getElementById('modalTitle').textContent = t.modalTitle;
+            document.getElementById('modalText').textContent = t.modalText;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // 点击模态框外部关闭
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('应用加载成功！');
+            updateLanguage();
+        });
     </script>
 </body>
 </html>
