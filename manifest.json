@@ -1,17 +1,51 @@
 {
-  "name": "Emotional Support Assistant",
-  "short_name": "Support Helper",
-  "description": "Your personal companion for life's daily moments",
-  "id": "com.asherhoe.emotional_support_assistant",
+  "name": "情绪支持助手 - Emotional Support Assistant",
+  "short_name": "情绪助手",
+  "description": "你不是一个人，我们在这里陪伴你。Your personal companion for emotional support and comfort.",
+  "id": "com.emotionalsupport.assistant",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#fdf2f8",
   "theme_color": "#ec4899",
-  "categories": ["lifestyle", "health"],
+  "categories": ["lifestyle", "health", "wellness", "medical"],
+  "lang": "zh-CN",
+  "dir": "ltr",
   "icons": [
+    {
+      "src": "icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
     {
       "src": "icon-192.png",
       "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-384.png",
+      "sizes": "384x384",
       "type": "image/png"
     },
     {
@@ -25,5 +59,71 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot-mobile-1.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "主界面 - 情绪支持助手"
+    },
+    {
+      "src": "screenshot-mobile-2.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "SOS紧急安抚功能"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "SOS紧急安抚",
+      "short_name": "SOS",
+      "description": "快速启动紧急安抚功能",
+      "url": "/?action=sos",
+      "icons": [
+        {
+          "src": "shortcut-sos.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "安全照片",
+      "short_name": "照片",
+      "description": "查看安全照片",
+      "url": "/?action=photos",
+      "icons": [
+        {
+          "src": "shortcut-photos.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "温暖声音",
+      "short_name": "音频",
+      "description": "播放温暖声音",
+      "url": "/?action=audio",
+      "icons": [
+        {
+          "src": "shortcut-audio.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "display_override": ["standalone", "minimal-ui"],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
 }
