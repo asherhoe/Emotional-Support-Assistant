@@ -1,7 +1,7 @@
 {
   "name": "Emotional Support Assistant",
   "short_name": "ESA",
-  "description": "Your personal companion for emotional support and comfort",
+  "description": "Your personal companion for life's wonderful memories",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
