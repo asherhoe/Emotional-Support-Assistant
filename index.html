@@ -9,1057 +9,1804 @@
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+        .mb-6 {
+            margin-bottom: 24px;
+        }
+        .mt-4 {
+            margin-top: 16px;
+        }
+        .p-4 {
+            padding: 16px;
+        }
+        .rounded-lg {
+            border-radius: 12px;
+        }
+        .shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        .upload-area {
+            border: 2px dashed #ec4899;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            background: rgba(236, 72, 153, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            background: rgba(236, 72, 153, 0.1);
+            border-color: #be185d;
+        }
+        .sos-button {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 20px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+        .sos-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(239, 68, 68, 0.5);
+        }
+        .language-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .photo-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1;
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .audio-item {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+        }
+        .memory-item {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border: 1px solid #d946ef;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+        }
+        .fullscreen-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 80%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        .fullscreen-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .nav-button.left {
+            left: 20px;
+        }
+        .nav-button.right {
+            right: 20px;
+        }
+        .progress-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .duration-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .settings-section {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .duration-btn {
+            padding: 12px 8px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .duration-btn.active {
+            border-color: #ec4899;
+            background: #fdf2f8;
+            color: #be185d;
+            font-weight: 600;
+        }
+        .mixed-controls {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 16px;
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useRef, useEffect } = React;
-
-        // 简单的SVG图标组件
-        const Heart = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-        );
-
-        const Camera = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-            </svg>
-        );
-
-        const Mic = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/>
-                <line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-        );
-
-        const MessageCircle = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
-        );
-
-        const Globe = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-        );
-
-        const FileText = ({ className }) => (
-          <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14,2 14,8 20,8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <line x1="10" y1="9" x2="8" y2="9"/>
-          </svg>
-        );
-
-        const Plus = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-        );
-
-        const Play = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-            </svg>
-        );
-
-        const Pause = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-                <rect x="6" y="4" width="4" height="16"/>
-                <rect x="14" y="4" width="4" height="16"/>
-            </svg>
-        );
-
-        const Square = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-            </svg>
-        );
+        const { useState, useEffect, useRef } = React;
+        const { Heart, Camera, Mic, MessageCircle, FileText, Play, Pause, Volume2, Settings, Home, Globe } = lucide;
 
         const EmotionalSupportApp = () => {
-          const [currentView, setCurrentView] = useState('main');
-          const [sosMode, setSosMode] = useState('photo');
-          const [mixedMode, setMixedMode] = useState('photo-audio');
-          const [currentIndex, setCurrentIndex] = useState(0);
-          const [language, setLanguage] = useState('zh');
-          const [photoDuration, setPhotoDuration] = useState(20);
-          const [uploadedAudios, setUploadedAudios] = useState([]);
-          const [uploadedPhotos, setUploadedPhotos] = useState([]);
-          const [defaultPhotos, setDefaultPhotos] = useState([
-            { 
-              id: 1, 
-              url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '和好朋友的合照', en: 'Photo with good friends' },
-              isDefault: true
-            },
-            { 
-              id: 2, 
-              url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '初中时光', en: 'Middle school days' },
-              isDefault: true
-            },
-            { 
-              id: 3, 
-              url: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '温暖的回忆', en: 'Warm memories' },
-              isDefault: true
-            },
-            { 
-              id: 4, 
-              url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '美丽的自然风光', en: 'Beautiful nature scenery' },
-              isDefault: true
-            },
-            { 
-              id: 5, 
-              url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '宁静的湖泊', en: 'Peaceful lake' },
-              isDefault: true
-            }
-          ]);
-          const [defaultMemories, setDefaultMemories] = useState([
-            { 
-              id: 1, 
-              title: { zh: '第一次获奖', en: 'First Award' }, 
-              content: { zh: '记得那天你特别开心，眼睛都在发光。那种成就感是多么珍贵，它证明了你的努力和才能。', en: 'Remember how happy you were that day, your eyes were shining. That sense of achievement was so precious, proving your efforts and talents.' },
-              isDefault: true
-            },
-            { 
-              id: 2, 
-              title: { zh: '和朋友的午餐', en: 'Lunch with Friends' }, 
-              content: { zh: '那次聊天聊到忘记时间，你笑得特别灿烂。友谊的温暖总是能治愈一切烦恼。', en: 'That time you chatted until you forgot the time, you smiled so brightly. The warmth of friendship can always heal all troubles.' },
-              isDefault: true
-            },
-            { 
-              id: 3, 
-              title: { zh: '克服困难', en: 'Overcoming Challenges' }, 
-              content: { zh: '你曾经觉得不可能的事情，最后都做到了。这说明你比自己想象的更坚强、更有能力。', en: 'Things you once thought impossible, you eventually accomplished them all. This shows you are stronger and more capable than you imagine.' },
-              isDefault: true
-            },
-            { 
-              id: 4, 
-              title: { zh: '家人的拥抱', en: 'Family Hug' }, 
-              content: { zh: '那个温暖的拥抱，让你感受到无条件的爱。家人永远是你最坚实的后盾。', en: 'That warm hug made you feel unconditional love. Family will always be your strongest support.' },
-              isDefault: true
-            },
-            { 
-              id: 5, 
-              title: { zh: '内心的平静', en: 'Inner Peace' }, 
-              content: { zh: '即使在最困难的时候，你内心深处仍有一片宁静的角落。那里是你力量的源泉。', en: 'Even in the most difficult times, there is still a peaceful corner deep in your heart. That is the source of your strength.' },
-              isDefault: true
-            }
-          ]);
-          const [notepadContent, setNotepadContent] = useState('');
-          const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-          const intervalRef = useRef(null);
-          const audioRef = useRef(null);
-
-          // 多语言文本
-          const texts = {
-            zh: {
-              title: '情绪支持助手',
-              subtitle: '你不是一个人，我们在这里陪伴你',
-              sosButton: '🆘 紧急安抚',
-              photoMode: '📸 安全照片',
-              audioMode: '🎵 温暖声音',
-              messageMode: '💭 正面记忆',
-              mixedMode: '🔄 混合模式',
-              photoAudioMode: '📸🎵 照片+音乐',
-              memoryAudioMode: '💭🎵 文字+音乐',
-              safePhotos: '安全照片',
-              supportSounds: '支持声音',
-              positiveMemories: '正面记忆',
-              photosCount: '张照片',
-              audiosCount: '段录音',
-              memoriesCount: '个回忆',
-              stop: '停止',
-              back: '← 返回',
-              yourMemories: '你的美好回忆',
-              returnHome: '返回主页',
-              photoDuration: '照片停留时间',
-              seconds: '秒',
-              minute: '分钟',
-              minutes: '分钟',
-              permanent: '永久',
-              photoSettings: '照片设置',
-              replay: '重播',
-              pause: '暂停',
-              resume: '继续',
-              notepad: '心灵笔记',
-              writeNote: '写下你的美好回忆或正面想法...',
-              uploadPhoto: '上传照片',
-              uploadAudio: '上传音频',
-              addMemory: '添加回忆',
-              next: '下一个',
-              previous: '上一个'
-            },
-            en: {
-              title: 'Emotional Support Assistant',
-              subtitle: 'You are not alone, we are here with you',
-              sosButton: '🆘 Emergency Comfort',
-              photoMode: '📸 Safe Photos',
-              audioMode: '🎵 Warm Sounds',
-              messageMode: '💭 Positive Memories',
-              mixedMode: '🔄 Mixed Mode',
-              photoAudioMode: '📸🎵 Photo+Music',
-              memoryAudioMode: '💭🎵 Text+Music',
-              safePhotos: 'Safe Photos',
-              supportSounds: 'Support Sounds',
-              positiveMemories: 'Positive Memories',
-              photosCount: 'photos',
-              audiosCount: 'audios',
-              memoriesCount: 'memories',
-              stop: 'Stop',
-              back: '← Back',
-              yourMemories: 'Your Beautiful Memories',
-              returnHome: 'Return Home',
-              photoDuration: 'Photo Duration',
-              seconds: 'seconds',
-              minute: 'minute',
-              minutes: 'minutes',
-              permanent: 'Permanent',
-              photoSettings: 'Photo Settings',
-              replay: 'Replay',
-              pause: 'Pause',
-              resume: 'Resume',
-              notepad: 'Heart Notes',
-              writeNote: 'Write your beautiful memories or positive thoughts...',
-              uploadPhoto: 'Upload Photo',
-              uploadAudio: 'Upload Audio',
-              addMemory: 'Add Memory',
-              next: 'Next',
-              previous: 'Previous'
-            }
-          };
-
-          const t = texts[language];
-
-          // 合并默认照片和用户上传的照片
-          const allPhotos = [...defaultPhotos, ...uploadedPhotos];
-
-          // 合并默认回忆和Notepad内容
-          const allMemories = notepadContent.trim() ? 
-            [...defaultMemories, {
-              id: 'notepad',
-              title: { zh: '我的心灵笔记', en: 'My Heart Notes' },
-              content: { zh: notepadContent, en: notepadContent },
-              isNotepad: true
-            }] : defaultMemories;
-
-          // 音频播放控制函数
-          const playAudio = (audioUrl) => {
-            if (audioRef.current) {
-              audioRef.current.src = audioUrl;
-              audioRef.current.play().then(() => {
-                setIsAudioPlaying(true);
-              }).catch(err => {
-                console.log('播放失败:', err);
-              });
-            }
-          };
-
-          const pauseAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              setIsAudioPlaying(false);
-            }
-          };
-
-          const resumeAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.play().then(() => {
-                setIsAudioPlaying(true);
-              });
-            }
-          };
-
-          const stopAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              audioRef.current.currentTime = 0;
-              setIsAudioPlaying(false);
-            }
-          };
-
-          // SOS按钮功能
-          const handleSOS = () => {
-            setCurrentIndex(0);
+            const [currentView, setCurrentView] = useState('main');
+            const [language, setLanguage] = useState('zh');
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+            const [photoDuration, setPhotoDuration] = useState(10);
+            const [sosTimer, setSosTimer] = useState(null);
+            const [notepadContent, setNotepadContent] = useState('');
+            const [uploadedPhotos, setUploadedPhotos] = useState([]);
+            const [uploadedAudios, setUploadedAudios] = useState([]);
+            const [defaultMemories, setDefaultMemories] = useState([]);
+            const [defaultPhotos, setDefaultPhotos] = useState([]);
             
-            if (sosMode === 'photo') {
-              startPhotoSlideshow();
-            } else if (sosMode === 'audio') {
-              if (uploadedAudios.length > 0) {
-                setCurrentView('audio');
-                setTimeout(() => {
-                  const firstAudio = uploadedAudios[0];
-                  if (firstAudio && audioRef.current) {
-                    playAudio(firstAudio.audioUrl);
-                  }
-                }, 100);
-              } else {
-                setCurrentView('audio');
-              }
-            } else if (sosMode === 'message') {
-              if (allMemories.length > 0) {
-                setCurrentView('memories-slideshow');
-              } else {
-                setCurrentView('memories');
-              }
-            } else if (sosMode === 'mixed') {
-              if (mixedMode === 'photo-audio') {
-                if (allPhotos.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-photo-audio');
-                  if (photoDuration > 0) {
-                    intervalRef.current = setInterval(() => {
-                      setCurrentIndex(prev => (prev + 1) % allPhotos.length);
-                    }, photoDuration * 1000);
-                  }
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      playAudio(firstAudio.audioUrl);
-                    }
-                  }, 100);
-                } else {
-                  alert(t.photoAudioMode + ' needs both photos and audio files');
+            const audioRef = useRef(null);
+            const sosIntervalRef = useRef(null);
+
+            // 翻译文本
+            const translations = {
+                zh: {
+                    appTitle: '情绪支持助手',
+                    tagline: '你不是一个人，我们在这里陪伴你',
+                    sosButton: 'SOS 紧急安抚',
+                    safePhotos: '安全照片',
+                    supportSounds: '温暖声音',
+                    positiveMemories: '正面记忆',
+                    mixedMode: '混合模式',
+                    back: '← 返回',
+                    stop: '停止',
+                    pause: '暂停',
+                    resume: '恢复',
+                    play: '播放',
+                    returnHome: '返回主页',
+                    yourMemories: '你的回忆',
+                    photoSettings: '照片设置',
+                    photoDuration: '照片停留时间:',
+                    permanent: '永久',
+                    seconds: '秒',
+                    minute: '分钟',
+                    minutes: '分钟',
+                    uploadPhotos: '上传照片',
+                    uploadAudios: '上传音频',
+                    writeMemory: '写下回忆',
+                    photoSlideshow: '照片幻灯片',
+                    memorySlideshow: '回忆幻灯片',
+                    audioPlayback: '音频播放',
+                    mixedPhotoAudio: '照片 + 音乐',
+                    mixedMemoryAudio: '回忆 + 音乐'
+                },
+                en: {
+                    appTitle: 'Emotional Support Assistant',
+                    tagline: "You're not alone, we're here with you",
+                    sosButton: 'SOS Emergency Comfort',
+                    safePhotos: 'Safe Photos',
+                    supportSounds: 'Support Sounds',
+                    positiveMemories: 'Positive Memories',
+                    mixedMode: 'Mixed Mode',
+                    back: '← Back',
+                    stop: 'Stop',
+                    pause: 'Pause',
+                    resume: 'Resume',
+                    play: 'Play',
+                    returnHome: 'Return Home',
+                    yourMemories: 'Your Memories',
+                    photoSettings: 'Photo Settings',
+                    photoDuration: 'Photo Duration:',
+                    permanent: 'Permanent',
+                    seconds: 'seconds',
+                    minute: 'minute',
+                    minutes: 'minutes',
+                    uploadPhotos: 'Upload Photos',
+                    uploadAudios: 'Upload Audios',
+                    writeMemory: 'Write Memory',
+                    photoSlideshow: 'Photo Slideshow',
+                    memorySlideshow: 'Memory Slideshow',
+                    audioPlayback: 'Audio Playback',
+                    mixedPhotoAudio: 'Photos + Music',
+                    mixedMemoryAudio: 'Memories + Music'
                 }
-              } else if (mixedMode === 'memory-audio') {
-                if (allMemories.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-memory-audio');
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      playAudio(firstAudio.audioUrl);
+            };
+
+            const t = translations[language];
+
+            // 默认数据
+            useEffect(() => {
+                // 默认照片
+                setDefaultPhotos([
+                    {
+                        id: 'default-1',
+                        url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZmRmMmY4Ii8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iNjAiIGZpbGw9IiNmYjcxODUiLz4KPHN2ZyB4PSIxNzAiIHk9IjEyMCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0yMCAxNGMwLTIuMjA5IDEuNzkxLTQgNC00aDhjMi4yMDkgMCA0IDEuNzkxIDQgNHY2YzAgMi4yMDktMS43OTEgNC00IDRoLThjLTIuMjA5IDAtNC0xLjc5MS00LTR2LTZ6Ii8+CjxjaXJjbGUgY3g9IjI4IiBjeT0iMTciIHI9IjMiIGZpbGw9IiNmYjcxODUiLz4KPC9zdmc+Cjx0ZXh0IHg9IjIwMCIgeT0iMjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzZiNzI4MCI+5riF5paw55qE5pyd6Ziz6ZiF5YWJPz9z4jAiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiPueCueWHu+S4iuS8oOmcnOimgeS/neeVmeeahOaXtuWIuTwvdGV4dD4KPC9zdmc+',
+                        description: {
+                            zh: '清新的朝阳阳光',
+                            en: 'Fresh Morning Sunshine'
+                        },
+                        isDefault: true
+                    },
+                    {
+                        id: 'default-2',
+                        url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZWZmNmZmIi8+CjxwYXRoIGQ9Ik0xMDAgMTUwYzAtNTUuMjI4IDQ0Ljc3Mi0xMDAgMTAwLTEwMHMxMDAgNDQuNzcyIDEwMCAxMDAiIHN0cm9rZT0iI2Q5NDZlZiIgc3Ryb2tlLXdpZHRoPSI4IiBmaWxsPSJub25lIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEyMCIgcj0iMTUiIGZpbGw9IiNmYmNmZTgiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMTIwIiByPSIxNSIgZmlsbD0iI2ZiY2ZlOCIvPgo8cGF0aCBkPSJNMTgwIDIwMGMwLTEwIDEwLTIwIDIwLTIwczIwIDEwIDIwIDIwIiBzdHJva2U9IiNkOTQ2ZWYiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0ibm9uZSIvPgo8dGV4dCB4PSIyMDAiIHk9IjI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM2YjcyODAiPuW6t+enkOeahOW+rumineaXtuWFiTwvdGV4dD4KPHR4dCB4PSIyMDAiIHk9IjI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiPuaxguWdjuW/q+S5kOeahOaXpeWtkDwvdGV4dD4KPC9zdmc+',
+                        description: {
+                            zh: '幸福的微笑时光',
+                            en: 'Happy Smiling Moments'
+                        },
+                        isDefault: true
                     }
-                  }, 100);
-                } else {
-                  alert(t.memoryAudioMode + ' needs both memories and audio files');
-                }
-              }
-            }
-          };
+                ]);
 
-          const playNextAudio = () => {
-            if (uploadedAudios.length > 1) {
-              const nextIndex = (currentIndex + 1) % uploadedAudios.length;
-              setCurrentIndex(nextIndex);
-              const nextAudio = uploadedAudios[nextIndex];
-              if (nextAudio && audioRef.current) {
-                playAudio(nextAudio.audioUrl);
-              }
-            } else if (uploadedAudios.length === 1) {
-              if (audioRef.current) {
-                audioRef.current.currentTime = 0;
-                audioRef.current.play();
-              }
-            }
-          };
+                // 默认回忆
+                setDefaultMemories([
+                    {
+                        id: 'memory-1',
+                        title: {
+                            zh: '我的成就',
+                            en: 'My Achievements'
+                        },
+                        content: {
+                            zh: '今天我完成了一项重要的任务，虽然过程很困难，但我坚持下来了。这让我意识到自己比想象中更有能力和韧性。',
+                            en: 'Today I completed an important task. Although the process was difficult, I persevered. This made me realize that I am more capable and resilient than I thought.'
+                        },
+                        isDefault: true
+                    },
+                    {
+                        id: 'memory-2',
+                        title: {
+                            zh: '感谢的话语',
+                            en: 'Words of Gratitude'
+                        },
+                        content: {
+                            zh: '我想起朋友对我说的话："你是一个特别的人，值得被爱和关心。"这些话在我最需要的时候给了我力量。',
+                            en: 'I remember what my friend said to me: "You are a special person who deserves to be loved and cared for." These words gave me strength when I needed it most.'
+                        },
+                        isDefault: true
+                    }
+                ]);
+            }, []);
 
-          const startPhotoSlideshow = () => {
-            setCurrentView('slideshow');
-            if (photoDuration > 0) {
-              intervalRef.current = setInterval(() => {
-                setCurrentIndex(prev => (prev + 1) % allPhotos.length);
-              }, photoDuration * 1000);
-            }
-          };
+            // 计算所有照片和回忆
+            const allPhotos = [...defaultPhotos, ...uploadedPhotos];
+            const allMemories = [
+                ...defaultMemories,
+                ...(notepadContent.trim() ? [{
+                    id: 'notepad',
+                    title: { zh: '我的心灵笔记', en: 'My Heart Notes' },
+                    content: { zh: notepadContent, en: notepadContent },
+                    isNotepad: true
+                }] : [])
+            ];
 
-          const stopSOS = () => {
-            if (intervalRef.current) {
-              clearInterval(intervalRef.current);
-            }
-            stopAudio();
-            setCurrentView('main');
-          };
-
-          // 文件上传处理
-          const handlePhotoUpload = (event) => {
-            const files = Array.from(event.target.files);
-            files.forEach(file => {
-              if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                  const newPhoto = {
-                    id: Date.now() + Math.random(),
-                    url: e.target.result,
-                    description: { zh: file.name, en: file.name },
-                    isDefault: false
-                  };
-                  setUploadedPhotos(prev => [...prev, newPhoto]);
-                };
-                reader.readAsDataURL(file);
-              }
-            });
-          };
-
-          const handleAudioUpload = (event) => {
-            const files = Array.from(event.target.files);
-            files.forEach(file => {
-              if (file.type.startsWith('audio/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                  const newAudio = {
-                    id: Date.now() + Math.random(),
-                    name: file.name,
-                    audioUrl: e.target.result
-                  };
-                  setUploadedAudios(prev => [...prev, newAudio]);
-                };
-                reader.readAsDataURL(file);
-              }
-            });
-          };
-
-          // 初始化音频元素
-          useEffect(() => {
-            if (audioRef.current) {
-              audioRef.current.addEventListener('ended', playNextAudio);
-              return () => {
+            // 音频控制函数
+            const playAudio = (audioUrl) => {
                 if (audioRef.current) {
-                  audioRef.current.removeEventListener('ended', playNextAudio);
+                    audioRef.current.src = audioUrl;
+                    audioRef.current.play();
                 }
-              };
-            }
-          }, [uploadedAudios, currentIndex]);
+            };
 
-          // 主界面
-          if (currentView === 'main') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-                <div className="max-w-md mx-auto">
-                  {/* 语言切换按钮 */}
-                  <div className="flex justify-end pt-4 mb-4">
-                    <button
-                      onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
-                      className="flex items-center space-x-2 bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 px-3 py-2 rounded-lg shadow-sm hover:from-pink-100 hover:to-rose-100"
-                    >
-                      <Globe className="w-4 h-4 text-gray-600" />
-                      <span className="text-sm text-gray-600">
-                        {language === 'zh' ? 'EN' : '中文'}
-                      </span>
-                    </button>
-                  </div>
+            const stopAudio = () => {
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                    audioRef.current.currentTime = 0;
+                    setIsAudioPlaying(false);
+                }
+            };
 
-                  {/* 标题 */}
-                  <div className="text-center mb-8">
-                    <Heart className="w-12 h-12 text-pink-500 mx-auto mb-2" />
-                    <h1 className="text-2xl font-bold text-gray-800 mb-2">{t.title}</h1>
-                    <p className="text-gray-600">{t.subtitle}</p>
-                  </div>
+            const pauseAudio = () => {
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                }
+            };
 
-                  {/* SOS 按钮 */}
-                  <div className="mb-8">
-                    <button
-                      onClick={handleSOS}
-                      className="w-full bg-red-500 hover:bg-red-600 text-white text-xl font-bold py-6 px-8 rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95"
-                    >
-                      {t.sosButton}
-                    </button>
-                    
-                    {/* SOS 模式选择 */}
-                    <div className="mt-4 grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => setSosMode('photo')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'photo' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.photoMode}
-                      </button>
-                      <button
-                        onClick={() => setSosMode('audio')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'audio' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.audioMode}
-                      </button>
-                      <button
-                        onClick={() => setSosMode('message')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'message' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.messageMode}
-                      </button>
-                      <button
-                        onClick={() => setSosMode('mixed')}
-                        className={`py-2 px-4 rounded-lg text-sm transition-colors ${sosMode === 'mixed' ? 'bg-blue-500 text-white' : 'bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 text-gray-700'}`}
-                      >
-                        {t.mixedMode}
-                      </button>
-                    </div>
+            const resumeAudio = () => {
+                if (audioRef.current) {
+                    audioRef.current.play();
+                }
+            };
 
-                    {/* 混合模式的子选项 */}
-                    {sosMode === 'mixed' && (
-                      <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
-                        <p className="text-sm text-gray-700 mb-3 text-center font-medium">
-                          {language === 'zh' ? '选择混合模式类型:' : 'Choose Mixed Mode Type:'}
-                        </p>
-                        <div className="grid grid-cols-1 gap-2">
-                          <button
-                            onClick={() => setMixedMode('photo-audio')}
-                            className={`py-3 px-4 rounded-lg text-sm transition-colors ${mixedMode === 'photo-audio' ? 'bg-purple-500 text-white' : 'bg-white border border-purple-200 text-gray-700 hover:bg-purple-50'}`}
-                          >
-                            {t.photoAudioMode}
-                            <p className="text-xs mt-1 opacity-80">
-                              {language === 'zh' ? '同时播放照片幻灯片和背景音乐' : 'Play photo slideshow with background music'}
-                            </p>
-                          </button>
-                          <button
-                            onClick={() => setMixedMode('memory-audio')}
-                            className={`py-3 px-4 rounded-lg text-sm transition-colors ${mixedMode === 'memory-audio' ? 'bg-purple-500 text-white' : 'bg-white border border-purple-200 text-gray-700 hover:bg-purple-50'}`}
-                          >
-                            {t.memoryAudioMode}
-                            <p className="text-xs mt-1 opacity-80">
-                              {language === 'zh' ? '显示文字回忆并播放背景音乐' : 'Show text memories with background music'}
-                            </p>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+            const playNextAudio = () => {
+                if (uploadedAudios.length > 0) {
+                    const nextIndex = (currentIndex + 1) % uploadedAudios.length;
+                    setCurrentIndex(nextIndex);
+                    const nextAudio = uploadedAudios[nextIndex];
+                    if (nextAudio && audioRef.current) {
+                        audioRef.current.src = nextAudio.audioUrl;
+                        audioRef.current.play();
+                    }
+                }
+            };
 
-                  {/* 设置区域 */}
-                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md mb-6">
-                    <h3 className="font-semibold text-gray-800 mb-4 text-center">{t.photoSettings}</h3>
-                    
-                    <div>
-                      <p className="text-sm text-gray-600 mb-2">{t.photoDuration}:</p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { value: 10, label: `10 ${t.seconds}` },
-                          { value: 20, label: `20 ${t.seconds}` },
-                          { value: 60, label: `1 ${t.minute}` },
-                          { value: 300, label: `5 ${t.minutes}` },
-                          { value: 1800, label: `30 ${t.minutes}` },
-                          { value: 0, label: t.permanent }
-                        ].map(option => (
-                          <button
-                            key={option.value}
-                            onClick={() => setPhotoDuration(option.value)}
-                            className={`py-2 px-2 rounded-lg text-xs transition-colors ${
-                              photoDuration === option.value 
-                                ? 'bg-blue-500 text-white' 
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 功能卡片 */}
-                  <div className="grid grid-cols-1 gap-4">
-                    <div 
-                      onClick={() => setCurrentView('photos')}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
-                    >
-                      <div className="flex items-center">
-                        <Camera className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{t.safePhotos}</h3>
-                          <p className="text-sm text-gray-600">{allPhotos.length} {t.photosCount}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div 
-                      onClick={() => setCurrentView('audios')}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
-                    >
-                      <div className="flex items-center">
-                        <Mic className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{t.supportSounds}</h3>
-                          <p className="text-sm text-gray-600">{uploadedAudios.length} {t.audiosCount}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div 
-                      onClick={() => setCurrentView('memories')}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
-                    >
-                      <div className="flex items-center">
-                        <MessageCircle className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{t.positiveMemories}</h3>
-                          <p className="text-sm text-gray-600">{allMemories.length} {t.memoriesCount}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 隐藏的音频元素 */}
-                <audio ref={audioRef} style={{display: 'none'}} />
-              </div>
-            );
-          }
-
-          // 照片幻灯片视图
-          if (currentView === 'slideshow') {
-            return (
-              <div className="min-h-screen bg-black relative overflow-hidden">
-                <button
-                  onClick={stopSOS}
-                  className="absolute top-4 left-4 z-10 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold"
-                >
-                  {t.stop}
-                </button>
+            // SOS 功能
+            const startSOS = (mode) => {
+                setCurrentIndex(0);
+                setCurrentView(mode);
                 
-                <div className="absolute top-4 right-4 z-10 text-white text-sm bg-black bg-opacity-50 px-3 py-2 rounded-lg">
-                  {currentIndex + 1} / {allPhotos.length}
-                </div>
+                if (sosIntervalRef.current) {
+                    clearInterval(sosIntervalRef.current);
+                }
 
-                {allPhotos.length > 0 && (
-                  <div className="w-full h-screen flex items-center justify-center">
-                    <img
-                      src={allPhotos[currentIndex].url}
-                      alt={allPhotos[currentIndex].description[language]}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                )}
-
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center bg-black bg-opacity-50 px-4 py-2 rounded-lg">
-                  <p className="text-lg font-medium">
-                    {allPhotos.length > 0 ? allPhotos[currentIndex].description[language] : ''}
-                  </p>
-                </div>
-              </div>
-            );
-          }
-
-          // 照片管理视图
-          if (currentView === 'photos') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-                <div className="max-w-md mx-auto">
-                  <div className="flex items-center justify-between mb-6">
-                    <button
-                      onClick={() => setCurrentView('main')}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                      {t.back}
-                    </button>
-                    <h2 className="text-xl font-bold text-gray-800">{t.safePhotos}</h2>
-                    <div></div>
-                  </div>
-
-                  {/* 上传按钮 */}
-                  <div className="mb-6">
-                    <label className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg cursor-pointer flex items-center justify-center space-x-2 transition-colors">
-                      <Plus className="w-5 h-5" />
-                      <span>{t.uploadPhoto}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handlePhotoUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-
-                  {/* 照片网格 */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {allPhotos.map((photo, index) => (
-                      <div key={photo.id} className="relative group">
-                        <img
-                          src={photo.url}
-                          alt={photo.description[language]}
-                          className="w-full h-32 object-cover rounded-lg shadow-md"
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 rounded-b-lg">
-                          {photo.description[language]}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* 开始幻灯片按钮 */}
-                  {allPhotos.length > 0 && (
-                    <div className="mt-8">
-                      <button
-                        onClick={startPhotoSlideshow}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-lg font-semibold text-lg"
-                      >
-                        📸 {language === 'zh' ? '开始照片幻灯片' : 'Start Photo Slideshow'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }
-
-          // 音频管理视图
-          if (currentView === 'audios') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-                <div className="max-w-md mx-auto">
-                  <div className="flex items-center justify-between mb-6">
-                    <button
-                      onClick={() => setCurrentView('main')}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                      {t.back}
-                    </button>
-                    <h2 className="text-xl font-bold text-gray-800">{t.supportSounds}</h2>
-                    <div></div>
-                  </div>
-
-                  {/* 上传按钮 */}
-                  <div className="mb-6">
-                    <label className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg cursor-pointer flex items-center justify-center space-x-2 transition-colors">
-                      <Plus className="w-5 h-5" />
-                      <span>{t.uploadAudio}</span>
-                      <input
-                        type="file"
-                        accept="audio/*"
-                        multiple
-                        onChange={handleAudioUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-
-                  {/* 音频列表 */}
-                  <div className="space-y-4">
-                    {uploadedAudios.map((audio, index) => (
-                      <div key={audio.id} className="bg-white p-4 rounded-lg shadow-md border">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <p className="font-medium text-gray-800 truncate">{audio.name}</p>
-                          </div>
-                          <button
-                            onClick={() => {
-                              setCurrentIndex(index);
-                              if (isAudioPlaying && currentIndex === index) {
-                                pauseAudio();
-                              } else {
-                                playAudio(audio.audioUrl);
-                                setCurrentIndex(index);
-                              }
-                            }}
-                            className="ml-3 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full"
-                          >
-                            {isAudioPlaying && currentIndex === index ? 
-                              <Pause className="w-4 h-4" /> : 
-                              <Play className="w-4 h-4" />
+                if (photoDuration > 0 && (mode === 'slideshow' || mode === 'mixed-photo-audio' || mode === 'memories-slideshow' || mode === 'mixed-memory-audio')) {
+                    sosIntervalRef.current = setInterval(() => {
+                        setCurrentIndex(prev => {
+                            if (mode === 'slideshow' || mode === 'mixed-photo-audio') {
+                                return (prev + 1) % allPhotos.length;
+                            } else {
+                                return (prev + 1) % allMemories.length;
                             }
-                          </button>
+                        });
+                    }, photoDuration * 1000);
+                }
+
+                // 如果是音频模式，自动播放
+                if ((mode === 'audio' || mode === 'mixed-photo-audio' || mode === 'mixed-memory-audio') && uploadedAudios.length > 0) {
+                    setTimeout(() => {
+                        const audio = uploadedAudios[0];
+                        if (audio && audioRef.current) {
+                            audioRef.current.src = audio.audioUrl;
+                            audioRef.current.play();
+                        }
+                    }, 500);
+                }
+            };
+
+            const stopSOS = () => {
+                if (sosIntervalRef.current) {
+                    clearInterval(sosIntervalRef.current);
+                    sosIntervalRef.current = null;
+                }
+                stopAudio();
+                setCurrentView('main');
+                setCurrentIndex(0);
+            };
+
+            // 清理定时器
+            useEffect(() => {
+                return () => {
+                    if (sosIntervalRef.current) {
+                        clearInterval(sosIntervalRef.current);
+                    }
+                };
+            }, []);
+
+            // 渲染主界面
+            if (currentView === 'main') {
+                return (
+                    <div className="container">
+                        <button 
+                            className="language-btn"
+                            onClick={() => setLanguage(prev => prev === 'zh' ? 'en' : 'zh')}
+                        >
+                            <Globe size={16} style={{marginRight: '4px'}} />
+                            {language === 'zh' ? 'EN' : '中'}
+                        </button>
+
+                        <div className="card text-center" style={{marginTop: '60px'}}>
+                            <Heart size={64} color="#ec4899" style={{margin: '0 auto 24px'}} />
+                            <h1 style={{fontSize: '28px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px'}}>
+                                {t.appTitle}
+                            </h1>
+                            <p style={{color: '#6b7280', fontSize: '16px', marginBottom: '32px'}}>
+                                {t.tagline}
+                            </p>
+
+                            <button 
+                                className="sos-button"
+                                onClick={() => {
+                                    if (allPhotos.length > 0) {
+                                        startSOS('slideshow');
+                                    } else if (uploadedAudios.length > 0) {
+                                        startSOS('audio');
+                                    } else if (allMemories.length > 0) {
+                                        startSOS('memories-slideshow');
+                                    } else {
+                                        alert(language === 'zh' ? '请先上传照片、音频或写下回忆' : 'Please upload photos, audios or write memories first');
+                                    }
+                                }}
+                            >
+                                🆘 {t.sosButton}
+                            </button>
+
+                            <div className="grid grid-2 mb-6">
+                                <button 
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('photos')}
+                                >
+                                    <Camera size={20} />
+                                    {t.safePhotos}
+                                </button>
+                                <button 
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('audios')}
+                                >
+                                    <Mic size={20} />
+                                    {t.supportSounds}
+                                </button>
+                                <button 
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('memories')}
+                                >
+                                    <MessageCircle size={20} />
+                                    {t.positiveMemories}
+                                </button>
+                                <button 
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('mixed-mode')}
+                                >
+                                    <Settings size={20} />
+                                    {t.mixedMode}
+                                </button>
+                            </div>
+
+                            <div className="settings-section">
+                                <h3 style={{fontWeight: '600', marginBottom: '16px'}}>{t.photoSettings}</h3>
+                                <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '12px'}}>
+                                    {t.photoDuration}
+                                </p>
+                                <div className="settings-grid">
+                                    {[
+                                        {value: 10, label: `10 ${t.seconds}`},
+                                        {value: 20, label: `20 ${t.seconds}`},
+                                        {value: 60, label: `1 ${t.minute}`},
+                                        {value: 300, label: `5 ${t.minutes}`},
+                                        {value: 1800, label: `30 ${t.minutes}`},
+                                        {value: 0, label: t.permanent}
+                                    ].map(option => (
+                                        <button
+                                            key={option.value}
+                                            className={`duration-btn ${photoDuration === option.value ? 'active' : ''}`}
+                                            onClick={() => setPhotoDuration(option.value)}
+                                        >
+                                            {option.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {uploadedAudios.length === 0 && (
-                    <div className="text-center py-8">
-                      <Mic className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-500">
-                        {language === 'zh' ? '还没有上传音频文件' : 'No audio files uploaded yet'}
-                      </p>
                     </div>
-                  )}
-                </div>
+                );
+            }
 
-                <audio ref={audioRef} style={{display: 'none'}} />
-              </div>
-            );
-          }
+            // 混合模式选择界面
+            if (currentView === 'mixed-mode') {
+                return (
+                    <div className="container">
+                        <div className="card" style={{marginTop: '40px'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('main')}
+                                >
+                                    {t.back}
+                                </button>
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold'}}>{t.mixedMode}</h2>
+                                <div></div>
+                            </div>
 
-          // 音频播放视图
-          if (currentView === 'audio') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-purple-900 to-blue-900 p-4 text-white">
-                <div className="max-w-md mx-auto text-center">
-                  <button
-                    onClick={stopSOS}
-                    className="absolute top-4 left-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold"
-                  >
-                    {t.stop}
-                  </button>
+                            <div className="grid" style={{gap: '16px'}}>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => startSOS('slideshow')}
+                                    disabled={allPhotos.length === 0}
+                                    style={{padding: '16px', fontSize: '16px'}}
+                                >
+                                    <Camera size={20} />
+                                    {t.photoSlideshow}
+                                </button>
 
-                  <div className="mt-20">
-                    <Mic className="w-24 h-24 text-white mx-auto mb-8" />
-                    
-                    {uploadedAudios.length > 0 ? (
-                      <>
-                        <h2 className="text-2xl font-bold mb-4">{uploadedAudios[currentIndex]?.name}</h2>
-                        <p className="text-lg opacity-80 mb-8">
-                          {currentIndex + 1} / {uploadedAudios.length}
-                        </p>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => startSOS('memories-slideshow')}
+                                    disabled={allMemories.length === 0}
+                                    style={{padding: '16px', fontSize: '16px'}}
+                                >
+                                    <MessageCircle size={20} />
+                                    {t.memorySlideshow}
+                                </button>
+
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => startSOS('audio')}
+                                    disabled={uploadedAudios.length === 0}
+                                    style={{padding: '16px', fontSize: '16px'}}
+                                >
+                                    <Volume2 size={20} />
+                                    {t.audioPlayback}
+                                </button>
+
+                                <button
+                                    className="btn btn-success"
+                                    onClick={() => startSOS('mixed-photo-audio')}
+                                    disabled={allPhotos.length === 0 || uploadedAudios.length === 0}
+                                    style={{padding: '16px', fontSize: '16px'}}
+                                >
+                                    <Camera size={20} />
+                                    <Volume2 size={20} />
+                                    {t.mixedPhotoAudio}
+                                </button>
+
+                                <button
+                                    className="btn btn-success"
+                                    onClick={() => startSOS('mixed-memory-audio')}
+                                    disabled={allMemories.length === 0 || uploadedAudios.length === 0}
+                                    style={{padding: '16px', fontSize: '16px'}}
+                                >
+                                    <MessageCircle size={20} />
+                                    <Volume2 size={20} />
+                                    {t.mixedMemoryAudio}
+                                </button>
+                            </div>
+
+                            <div style={{marginTop: '24px', padding: '16px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px'}}>
+                                <p style={{fontSize: '14px', color: '#6b7280', textAlign: 'center', lineHeight: '1.5'}}>
+                                    {language === 'zh' ? 
+                                        '💡 提示：混合模式可以同时播放照片和音乐，为您提供更丰富的安抚体验。' : 
+                                        '💡 Tip: Mixed mode can play photos and music simultaneously for a richer comforting experience.'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 照片幻灯片视图
+            if (currentView === 'slideshow') {
+                if (allPhotos.length === 0) {
+                    return (
+                        <div className="container">
+                            <div className="card text-center" style={{marginTop: '80px'}}>
+                                <Camera size={64} color="#ec4899" style={{margin: '0 auto 24px'}} />
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '还没有照片' : 'No Photos Yet'}
+                                </h2>
+                                <p style={{color: '#6b7280', marginBottom: '24px'}}>
+                                    {language === 'zh' ? 
+                                        '请先上传一些照片来使用此功能' : 
+                                        'Please upload some photos to use this feature'}
+                                </p>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => setCurrentView('photos')}
+                                >
+                                    {t.uploadPhotos}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
+
+                const currentPhoto = allPhotos[currentIndex] || allPhotos[0];
+                return (
+                    <div className="fullscreen-view">
+                        <img
+                            src={currentPhoto.url}
+                            alt={currentPhoto.description[language]}
+                            className="fullscreen-image"
+                        />
                         
-                        <div className="flex justify-center space-x-4">
-                          <button
-                            onClick={() => {
-                              if (isAudioPlaying) {
-                                pauseAudio();
-                              } else {
-                                resumeAudio();
-                              }
-                            }}
-                            className="bg-white text-purple-900 p-4 rounded-full hover:bg-gray-100"
-                          >
-                            {isAudioPlaying ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8" />}
-                          </button>
-                          
-                          <button
-                            onClick={playNextAudio}
-                            className="bg-white text-purple-900 p-4 rounded-full hover:bg-gray-100"
-                          >
-                            <span className="text-xl">⏭️</span>
-                          </button>
+                        <div className="fullscreen-controls">
+                            <div className="card" style={{display: 'inline-block', padding: '16px'}}>
+                                <p style={{color: 'white', fontSize: '18px', marginBottom: '16px'}}>
+                                    {currentPhoto.description[language]}
+                                </p>
+                                <button
+                                    className="btn btn-danger"
+                                    onClick={stopSOS}
+                                >
+                                    {t.stop}
+                                </button>
+                            </div>
                         </div>
-                      </>
-                    ) : (
-                      <div className="text-center">
-                        <h2 className="text-2xl font-bold mb-4">
-                          {language === 'zh' ? '还没有音频文件' : 'No Audio Files'}
-                        </h2>
-                        <p className="text-lg opacity-80">
-                          {language === 'zh' ? '请先上传一些音频文件' : 'Please upload some audio files first'}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                        
+                        <div className="progress-indicator">
+                            {currentIndex + 1} / {allPhotos.length}
+                        </div>
 
-                <audio ref={audioRef} style={{display: 'none'}} />
-              </div>
-            );
-          }
-
-          // 回忆管理视图
-          if (currentView === 'memories') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-                <div className="max-w-md mx-auto">
-                  <div className="flex items-center justify-between mb-6">
-                    <button
-                      onClick={() => setCurrentView('main')}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                      {t.back}
-                    </button>
-                    <h2 className="text-xl font-bold text-gray-800">{t.positiveMemories}</h2>
-                    <div></div>
-                  </div>
-
-                  {/* 心灵笔记区域 */}
-                  <div className="mb-6 bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md">
-                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
-                      <FileText className="w-5 h-5 mr-2 text-pink-500" />
-                      {t.notepad}
-                    </h3>
-                    <textarea
-                      value={notepadContent}
-                      onChange={(e) => setNotepadContent(e.target.value)}
-                      placeholder={t.writeNote}
-                      className="w-full h-24 p-3 border border-pink-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-pink-300"
-                    />
-                  </div>
-
-                  {/* 默认回忆列表 */}
-                  <div className="space-y-4">
-                    {allMemories.map((memory, index) => (
-                      <div key={memory.id} className={`p-4 rounded-xl shadow-md border ${memory.isNotepad ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200' : 'bg-white border-gray-200'}`}>
-                        <h3 className="font-semibold text-gray-800 mb-2">
-                          {memory.title[language]}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed">
-                          {memory.content[language]}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* 开始回忆幻灯片按钮 */}
-                  {allMemories.length > 0 && (
-                    <div className="mt-8">
-                      <button
-                        onClick={() => {
-                          setCurrentIndex(0);
-                          setCurrentView('memories-slideshow');
-                        }}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-lg font-semibold text-lg"
-                      >
-                        💭 {language === 'zh' ? '开始回忆幻灯片' : 'Start Memory Slideshow'}
-                      </button>
+                        <div className="duration-indicator">
+                            {photoDuration === 0 && t.permanent}
+                            {photoDuration === 10 && `10 ${t.seconds}`}
+                            {photoDuration === 20 && `20 ${t.seconds}`}
+                            {photoDuration === 60 && `1 ${t.minute}`}
+                            {photoDuration === 300 && `5 ${t.minutes}`}
+                            {photoDuration === 1800 && `30 ${t.minutes}`}
+                        </div>
+                        
+                        <button
+                            className="nav-button left"
+                            onClick={() => setCurrentIndex((prev) => (prev - 1 + allPhotos.length) % allPhotos.length)}
+                        >
+                            ←
+                        </button>
+                        <button
+                            className="nav-button right"
+                            onClick={() => setCurrentIndex((prev) => (prev + 1) % allPhotos.length)}
+                        >
+                            →
+                        </button>
                     </div>
-                  )}
-                </div>
-              </div>
-            );
-          }
+                );
+            }
 
-          // 回忆幻灯片视图
-          if (currentView === 'memories-slideshow') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-purple-900 to-pink-900 p-4 text-white">
-                <button
-                  onClick={stopSOS}
-                  className="absolute top-4 left-4 z-10 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold"
-                >
-                  {t.stop}
-                </button>
-                
-                <div className="absolute top-4 right-4 z-10 text-white text-sm bg-black bg-opacity-50 px-3 py-2 rounded-lg">
-                  {currentIndex + 1} / {allMemories.length}
-                </div>
+            // 回忆幻灯片视图
+            if (currentView === 'memories-slideshow') {
+                if (allMemories.length === 0) {
+                    return (
+                        <div className="container">
+                            <div className="card text-center" style={{marginTop: '80px'}}>
+                                <MessageCircle size={64} color="#ec4899" style={{margin: '0 auto 24px'}} />
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '还没有回忆记录' : 'No Memory Records'}
+                                </h2>
+                                <p style={{color: '#6b7280', marginBottom: '24px'}}>
+                                    {language === 'zh' ? 
+                                        '请先写下一些美好回忆来使用此功能' : 
+                                        'Please write some wonderful memories to use this feature'}
+                                </p>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => setCurrentView('memories')}
+                                >
+                                    {t.writeMemory}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
 
-                <div className="max-w-md mx-auto flex items-center justify-center min-h-screen">
-                  {allMemories.length > 0 && (
-                    <div className="text-center px-6">
-                      <h2 className="text-3xl font-bold mb-8">
-                        {allMemories[currentIndex].title[language]}
-                      </h2>
-                      <p className="text-xl leading-relaxed">
-                        {allMemories[currentIndex].content[language]}
-                      </p>
+                const currentMemory = allMemories[currentIndex] || allMemories[0];
+                return (
+                    <div className="container">
+                        <div className="card text-center" style={{marginTop: '40px'}}>
+                            <MessageCircle size={64} color="#ec4899" style={{margin: '0 auto 24px'}} />
+                            <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                {currentMemory.title[language]}
+                            </h2>
+                            
+                            <div style={{
+                                background: 'linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%)',
+                                border: '1px solid #d946ef',
+                                padding: '24px',
+                                borderRadius: '12px',
+                                marginBottom: '24px',
+                                maxHeight: '300px',
+                                overflowY: 'auto'
+                            }}>
+                                <p style={{
+                                    color: '#374151',
+                                    lineHeight: '1.6',
+                                    whiteSpace: 'pre-wrap',
+                                    textAlign: 'left'
+                                }}>
+                                    {currentMemory.content[language]}
+                                </p>
+                            </div>
+                            
+                            <p style={{fontSize: '14px', color: '#8b5cf6', marginBottom: '16px'}}>
+                                {language === 'zh' ? 
+                                    `回忆: ${currentIndex + 1} / ${allMemories.length}` : 
+                                    `Memory: ${currentIndex + 1} / ${allMemories.length}`}
+                            </p>
+                            
+                            <div style={{display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '16px'}}>
+                                <button
+                                    className="btn btn-danger"
+                                    onClick={stopSOS}
+                                >
+                                    {t.stop}
+                                </button>
+                            </div>
+
+                            {allMemories.length > 1 && (
+                                <div style={{display: 'flex', justifyContent: 'center', gap: '8px'}}>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            const prevIndex = (currentIndex - 1 + allMemories.length) % allMemories.length;
+                                            setCurrentIndex(prevIndex);
+                                        }}
+                                        style={{padding: '8px 16px', fontSize: '14px'}}
+                                    >
+                                        {language === 'zh' ? '← 上一个' : '← Previous'}
+                                    </button>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            const nextIndex = (currentIndex + 1) % allMemories.length;
+                                            setCurrentIndex(nextIndex);
+                                        }}
+                                        style={{padding: '8px 16px', fontSize: '14px'}}
+                                    >
+                                        {language === 'zh' ? '下一个 →' : 'Next →'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                  )}
-                </div>
+                );
+            }
 
-                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4">
-                  <button
-                    onClick={() => setCurrentIndex(prev => prev > 0 ? prev - 1 : allMemories.length - 1)}
-                    className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-6 py-3 rounded-lg"
-                  >
-                    {t.previous}
-                  </button>
-                  <button
-                    onClick={() => setCurrentIndex(prev => (prev + 1) % allMemories.length)}
-                    className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-6 py-3 rounded-lg"
-                  >
-                    {t.next}
-                  </button>
-                </div>
-              </div>
-            );
-          }
+            // 音频播放视图
+            if (currentView === 'audio') {
+                if (uploadedAudios.length === 0) {
+                    return (
+                        <div className="container">
+                            <div className="card text-center" style={{marginTop: '80px'}}>
+                                <Mic size={64} color="#ec4899" style={{margin: '0 auto 24px'}} />
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '还没有音频文件' : 'No Audio Files'}
+                                </h2>
+                                <p style={{color: '#6b7280', marginBottom: '24px'}}>
+                                    {language === 'zh' ? 
+                                        '请先上传一些音频文件来使用语音功能' : 
+                                        'Please upload some audio files to use voice feature'}
+                                </p>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => setCurrentView('audios')}
+                                >
+                                    {t.uploadAudios}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
 
-          // 混合模式：照片+音频
-          if (currentView === 'mixed-photo-audio') {
-            return (
-              <div className="min-h-screen bg-black relative overflow-hidden">
-                <button
-                  onClick={stopSOS}
-                  className="absolute top-4 left-4 z-10 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold"
-                >
-                  {t.stop}
-                </button>
-                
-                <div className="absolute top-4 right-4 z-10 text-white text-sm bg-black bg-opacity-50 px-3 py-2 rounded-lg">
-                  📸 {currentIndex + 1} / {allPhotos.length}
-                </div>
+                const currentAudio = uploadedAudios[currentIndex] || uploadedAudios[0];
+                return (
+                    <div className="container">
+                        <div className="card text-center" style={{marginTop: '80px'}}>
+                            <Mic size={64} color="#ec4899" style={{margin: '0 auto 24px'}} />
+                            <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                {currentAudio.fileName}
+                            </h2>
+                            <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '8px'}}>
+                                {currentAudio.fileSize}
+                            </p>
+                            
+                            <p style={{fontSize: '14px', color: '#3b82f6', marginBottom: '16px'}}>
+                                {language === 'zh' ? 
+                                    `播放进度: ${currentIndex + 1} / ${uploadedAudios.length}` : 
+                                    `Playing: ${currentIndex + 1} / ${uploadedAudios.length}`}
+                            </p>
+                            
+                            {isAudioPlaying && (
+                                <div style={{marginBottom: '16px', color: '#10b981'}}>
+                                    <p style={{fontSize: '14px'}}>
+                                        {language === 'zh' ? '🎵 正在播放...' : '🎵 Playing...'}
+                                    </p>
+                                </div>
+                            )}
+                            
+                            <div style={{display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '16px'}}>
+                                {!isAudioPlaying && (
+                                    <button
+                                        className="btn btn-success"
+                                        onClick={() => {
+                                            if (audioRef.current && currentAudio.audioUrl) {
+                                                audioRef.current.src = currentAudio.audioUrl;
+                                                audioRef.current.play().then(() => {
+                                                    setIsAudioPlaying(true);
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        <Play size={20} />
+                                        {t.play}
+                                    </button>
+                                )}
+                                {isAudioPlaying && (
+                                    <button
+                                        className="btn btn-warning"
+                                        onClick={stopAudio}
+                                    >
+                                        <Pause size={20} />
+                                        {t.stop}
+                                    </button>
+                                )}
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={stopSOS}
+                                >
+                                    <Home size={20} />
+                                    {t.returnHome}
+                                </button>
+                            </div>
 
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 text-white text-sm bg-black bg-opacity-50 px-3 py-2 rounded-lg">
-                  🎵 {uploadedAudios[Math.min(currentIndex, uploadedAudios.length - 1)]?.name || ''}
-                </div>
-
-                {allPhotos.length > 0 && (
-                  <div className="w-full h-screen flex items-center justify-center">
-                    <img
-                      src={allPhotos[currentIndex].url}
-                      alt={allPhotos[currentIndex].description[language]}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                )}
-
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center bg-black bg-opacity-50 px-4 py-2 rounded-lg">
-                  <p className="text-lg font-medium">
-                    {allPhotos.length > 0 ? allPhotos[currentIndex].description[language] : ''}
-                  </p>
-                </div>
-
-                <audio ref={audioRef} style={{display: 'none'}} />
-              </div>
-            );
-          }
-
-          // 混合模式：回忆+音频
-          if (currentView === 'mixed-memory-audio') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-purple-900 to-pink-900 p-4 text-white">
-                <button
-                  onClick={stopSOS}
-                  className="absolute top-4 left-4 z-10 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold"
-                >
-                  {t.stop}
-                </button>
-                
-                <div className="absolute top-4 right-4 z-10 text-white text-sm bg-black bg-opacity-50 px-3 py-2 rounded-lg">
-                  💭 {currentIndex + 1} / {allMemories.length}
-                </div>
-
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 text-white text-sm bg-black bg-opacity-50 px-3 py-2 rounded-lg">
-                  🎵 {uploadedAudios[0]?.name || ''}
-                </div>
-
-                <div className="max-w-md mx-auto flex items-center justify-center min-h-screen">
-                  {allMemories.length > 0 && (
-                    <div className="text-center px-6">
-                      <h2 className="text-3xl font-bold mb-8">
-                        {allMemories[currentIndex].title[language]}
-                      </h2>
-                      <p className="text-xl leading-relaxed">
-                        {allMemories[currentIndex].content[language]}
-                      </p>
+                            {uploadedAudios.length > 1 && (
+                                <div style={{display: 'flex', justifyContent: 'center', gap: '8px'}}>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            const prevIndex = (currentIndex - 1 + uploadedAudios.length) % uploadedAudios.length;
+                                            setCurrentIndex(prevIndex);
+                                            const prevAudio = uploadedAudios[prevIndex];
+                                            if (prevAudio && audioRef.current) {
+                                                audioRef.current.src = prevAudio.audioUrl;
+                                                audioRef.current.play();
+                                            }
+                                        }}
+                                        style={{padding: '8px 16px', fontSize: '14px'}}
+                                    >
+                                        {language === 'zh' ? '← 上一首' : '← Previous'}
+                                    </button>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={playNextAudio}
+                                        style={{padding: '8px 16px', fontSize: '14px'}}
+                                    >
+                                        {language === 'zh' ? '下一首 →' : 'Next →'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                  )}
-                </div>
+                );
+            }
 
-                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4">
-                  <button
-                    onClick={() => setCurrentIndex(prev => prev > 0 ? prev - 1 : allMemories.length - 1)}
-                    className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-6 py-3 rounded-lg"
-                  >
-                    {t.previous}
-                  </button>
-                  <button
-                    onClick={() => setCurrentIndex(prev => (prev + 1) % allMemories.length)}
-                    className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-6 py-3 rounded-lg"
-                  >
-                    {t.next}
-                  </button>
-                </div>
+            // 照片管理视图
+            if (currentView === 'photos') {
+                return (
+                    <div className="container">
+                        <div style={{marginTop: '40px'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', padding: '0 16px'}}>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('main')}
+                                >
+                                    {t.back}
+                                </button>
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold'}}>{t.safePhotos}</h2>
+                                <div></div>
+                            </div>
 
-                <audio ref={audioRef} style={{display: 'none'}} />
-              </div>
-            );
-          }
+                            <div className="card">
+                                <h3 style={{fontWeight: '600', marginBottom: '16px', textAlign: 'center'}}>
+                                    {language === 'zh' ? '上传安全照片' : 'Upload Safe Photos'}
+                                </h3>
+                                
+                                <div style={{
+                                    background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                                    border: '1px solid #f59e0b',
+                                    padding: '16px',
+                                    borderRadius: '12px',
+                                    marginBottom: '16px'
+                                }}>
+                                    <p style={{fontSize: '14px', color: '#92400e', lineHeight: '1.5', textAlign: 'center'}}>
+                                        {language === 'zh' ? 
+                                            '📷 上传那些让你感到安全和快乐的照片 - 家人的笑容、朋友的陪伴、美丽的风景，或任何能带给你温暖回忆的瞬间。' : 
+                                            '📷 Upload photos that make you feel safe and happy - family smiles, friends\' company, beautiful scenery, or any moments that bring you warm memories.'}
+                                    </p>
+                                </div>
+                                
+                                <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '16px', textAlign: 'center'}}>
+                                    {language === 'zh' ? 
+                                        '支持格式: JPG, PNG, GIF, WEBP, BMP' : 
+                                        'Supported: JPG, PNG, GIF, WEBP, BMP'}
+                                </p>
+                                
+                                <div className="upload-area">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={(e) => {
+                                            const files = Array.from(e.target.files);
+                                            files.forEach((file, index) => {
+                                                const url = URL.createObjectURL(file);
+                                                const newPhoto = {
+                                                    id: Date.now() + index,
+                                                    fileName: file.name,
+                                                    url: url,
+                                                    fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                                                    description: { 
+                                                        zh: file.name.replace(/\.[^/.]+$/, ""), 
+                                                        en: file.name.replace(/\.[^/.]+$/, "") 
+                                                    },
+                                                    isDefault: false
+                                                };
+                                                setUploadedPhotos(prev => [...prev, newPhoto]);
+                                            });
+                                            e.target.value = '';
+                                        }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            opacity: 0,
+                                            cursor: 'pointer'
+                                        }}
+                                    />
+                                    <Camera size={32} color="#ec4899" style={{marginBottom: '8px'}} />
+                                    <p style={{color: '#6b7280', textAlign: 'center'}}>
+                                        {language === 'zh' ? 
+                                            '点击选择照片或拖拽到这里' : 
+                                            'Click to select photos or drag them here'}
+                                    </p>
+                                </div>
+                            </div>
 
-          // 默认返回主界面
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 flex items-center justify-center">
-              <div className="text-center">
-                <Heart className="w-16 h-16 text-pink-500 mx-auto mb-4" />
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">情绪支持助手</h1>
-                <p className="text-gray-600 mb-4">加载中...</p>
-                <button 
-                  onClick={() => setCurrentView('main')}
-                  className="bg-pink-500 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors"
-                >
-                  返回主页
-                </button>
-              </div>
-            </div>
-          );
+                            <div className="card">
+                                <h4 style={{fontWeight: '600', color: '#374151', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '所有照片' : 'All Photos'}
+                                </h4>
+                                
+                                {allPhotos.length > 0 ? (
+                                    <div className="photo-grid">
+                                        {allPhotos.map((photo, index) => (
+                                            <div key={photo.id} className="photo-item">
+                                                <img
+                                                    src={photo.url}
+                                                    alt={photo.description[language]}
+                                                    style={{width: '100%', height: '100%', objectFit: 'cover'}}
+                                                />
+                                                <div className="photo-controls">
+                                                    <div style={{flex: 1, minWidth: 0}}>
+                                                        <span style={{
+                                                            background: '#ec4899',
+                                                            color: 'white',
+                                                            fontSize: '12px',
+                                                            padding: '4px 8px',
+                                                            borderRadius: '12px',
+                                                            marginRight: '8px'
+                                                        }}>
+                                                            {index + 1}
+                                                        </span>
+                                                        <span style={{fontSize: '12px', color: 'white'}}>
+                                                            {photo.description[language]}
+                                                        </span>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => {
+                                                            if (photo.isDefault) {
+                                                                setDefaultPhotos(prev => prev.filter(p => p.id !== photo.id));
+                                                            } else {
+                                                                setUploadedPhotos(prev => prev.filter(p => p.id !== photo.id));
+                                                                URL.revokeObjectURL(photo.url);
+                                                            }
+                                                        }}
+                                                        style={{
+                                                            background: '#ef4444',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: '4px',
+                                                            padding: '4px 8px',
+                                                            cursor: 'pointer',
+                                                            fontSize: '12px'
+                                                        }}
+                                                    >
+                                                        删除
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center" style={{color: '#6b7280', marginTop: '32px'}}>
+                                        <Camera size={48} color="#d1d5db" style={{margin: '0 auto 16px'}} />
+                                        <p style={{marginBottom: '8px', fontWeight: '500'}}>
+                                            {language === 'zh' ? '还没有任何照片' : 'No photos yet'}
+                                        </p>
+                                        <p style={{fontSize: '14px'}}>
+                                            {language === 'zh' ? 
+                                                '上传一些让你感到安全和快乐的照片吧' : 
+                                                'Upload some photos that make you feel safe and happy'}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 音频管理视图
+            if (currentView === 'audios') {
+                return (
+                    <div className="container">
+                        <div style={{marginTop: '40px'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', padding: '0 16px'}}>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('main')}
+                                >
+                                    {t.back}
+                                </button>
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold'}}>{t.supportSounds}</h2>
+                                <div></div>
+                            </div>
+
+                            <div className="card">
+                                <h3 style={{fontWeight: '600', marginBottom: '16px', textAlign: 'center'}}>
+                                    {language === 'zh' ? '上传音频文件' : 'Upload Audio Files'}
+                                </h3>
+                                
+                                <div style={{
+                                    background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                                    border: '1px solid #3b82f6',
+                                    padding: '16px',
+                                    borderRadius: '12px',
+                                    marginBottom: '16px'
+                                }}>
+                                    <p style={{fontSize: '14px', color: '#1e40af', lineHeight: '1.5', textAlign: 'center'}}>
+                                        {language === 'zh' ? 
+                                            '💝 使用手机录音记录家人朋友的温暖话语，或上传让你感到安心的音乐。在紧张焦虑时，这些熟悉的声音会像拥抱一样陪伴你。' : 
+                                            '💝 Record warm words from family and friends, or upload music that brings you comfort. During anxious moments, these familiar sounds will embrace you like a hug.'}
+                                    </p>
+                                </div>
+                                
+                                <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '16px', textAlign: 'center'}}>
+                                    {language === 'zh' ? 
+                                        '支持格式: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A' : 
+                                        'Supported: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A'}
+                                </p>
+                                
+                                <div className="upload-area">
+                                    <input
+                                        type="file"
+                                        accept="audio/*"
+                                        multiple
+                                        onChange={(e) => {
+                                            const files = Array.from(e.target.files);
+                                            files.forEach((file, index) => {
+                                                const url = URL.createObjectURL(file);
+                                                const newAudio = {
+                                                    id: Date.now() + index,
+                                                    fileName: file.name,
+                                                    audioUrl: url,
+                                                    fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                                                    fileType: file.type || 'Unknown'
+                                                };
+                                                setUploadedAudios(prev => [...prev, newAudio]);
+                                            });
+                                            e.target.value = '';
+                                        }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            opacity: 0,
+                                            cursor: 'pointer'
+                                        }}
+                                    />
+                                    <Mic size={32} color="#ec4899" style={{marginBottom: '8px'}} />
+                                    <p style={{color: '#6b7280', textAlign: 'center'}}>
+                                        {language === 'zh' ? 
+                                            '点击选择音频文件或拖拽到这里' : 
+                                            'Click to select audio files or drag them here'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <h4 style={{fontWeight: '600', color: '#374151', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '已上传的音频文件' : 'Uploaded Audio Files'}
+                                </h4>
+                                
+                                {uploadedAudios.length > 0 ? (
+                                    <div>
+                                        {uploadedAudios.map((audio, index) => (
+                                            <div key={audio.id} className="audio-item">
+                                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
+                                                    <div style={{flex: 1, minWidth: 0}}>
+                                                        <div style={{display: 'flex', alignItems: 'center'}}>
+                                                            <span style={{
+                                                                background: '#ec4899',
+                                                                color: 'white',
+                                                                fontSize: '14px',
+                                                                padding: '4px 12px',
+                                                                borderRadius: '12px',
+                                                                marginRight: '12px'
+                                                            }}>
+                                                                {index + 1}
+                                                            </span>
+                                                            <p style={{fontWeight: '600', fontSize: '14px', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                                                                {audio.fileName}
+                                                            </p>
+                                                        </div>
+                                                        <p style={{fontSize: '12px', color: '#6b7280', margin: '4px 0 0', marginLeft: '40px'}}>
+                                                            {audio.fileSize} • {audio.fileType}
+                                                        </p>
+                                                    </div>
+                                                    <div style={{display: 'flex', gap: '8px', marginLeft: '8px'}}>
+                                                        <button
+                                                            className="btn btn-success"
+                                                            onClick={() => playAudio(audio.audioUrl)}
+                                                            style={{padding: '6px 12px', fontSize: '12px'}}
+                                                        >
+                                                            <Play size={14} />
+                                                            {language === 'zh' ? '播放' : 'Play'}
+                                                        </button>
+                                                        {isAudioPlaying && (
+                                                            <button
+                                                                className="btn btn-warning"
+                                                                onClick={stopAudio}
+                                                                style={{padding: '6px 12px', fontSize: '12px'}}
+                                                            >
+                                                                <Pause size={14} />
+                                                                {language === 'zh' ? '停止' : 'Stop'}
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            onClick={() => {
+                                                                setUploadedAudios(prev => prev.filter(a => a.id !== audio.id));
+                                                                URL.revokeObjectURL(audio.audioUrl);
+                                                            }}
+                                                            style={{
+                                                                background: '#ef4444',
+                                                                color: 'white',
+                                                                border: 'none',
+                                                                borderRadius: '6px',
+                                                                padding: '6px 12px',
+                                                                cursor: 'pointer',
+                                                                fontSize: '12px'
+                                                            }}
+                                                        >
+                                                            删除
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center" style={{color: '#6b7280', marginTop: '32px'}}>
+                                        <Mic size={48} color="#d1d5db" style={{margin: '0 auto 16px'}} />
+                                        <p style={{marginBottom: '8px', fontWeight: '500'}}>
+                                            {language === 'zh' ? '还没有上传任何音频文件' : 'No audio files uploaded yet'}
+                                        </p>
+                                        <p style={{fontSize: '14px', padding: '0 16px'}}>
+                                            {language === 'zh' ? 
+                                                '开始收集那些能给你力量的声音吧 - 也许是妈妈的叮咛，朋友的鼓励，或是你最爱的歌曲' : 
+                                                'Start collecting sounds that give you strength - maybe mom\'s caring words, a friend\'s encouragement, or your favorite song'}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <audio 
+                            ref={audioRef} 
+                            style={{ display: 'none' }} 
+                            onEnded={() => setIsAudioPlaying(false)}
+                            onPause={() => setIsAudioPlaying(false)}
+                            onPlay={() => setIsAudioPlaying(true)}
+                            preload="auto"
+                        />
+                    </div>
+                );
+            }
+
+            // 回忆管理视图
+            if (currentView === 'memories') {
+                return (
+                    <div className="container">
+                        <div style={{marginTop: '40px'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', padding: '0 16px'}}>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setCurrentView('main')}
+                                >
+                                    {t.back}
+                                </button>
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold'}}>{t.yourMemories}</h2>
+                                <div></div>
+                            </div>
+
+                            <div className="card">
+                                <h3 style={{fontWeight: '600', marginBottom: '16px', textAlign: 'center'}}>
+                                    {language === 'zh' ? '✨ 心灵笔记 ✨' : '✨ Heart Notes ✨'}
+                                </h3>
+                                
+                                <div style={{
+                                    background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                                    border: '1px solid #f59e0b',
+                                    padding: '16px',
+                                    borderRadius: '12px',
+                                    marginBottom: '16px'
+                                }}>
+                                    <p style={{fontSize: '14px', color: '#92400e', lineHeight: '1.5', textAlign: 'center'}}>
+                                        {language === 'zh' ? 
+                                            '💝 在这里写下那些温暖的话语，记录美好的时刻，或是给自己的鼓励。在需要的时候，这些文字会成为你内心的光芒。' : 
+                                            '💝 Write warm words here, record beautiful moments, or give yourself encouragement. When needed, these words will become the light in your heart.'}
+                                    </p>
+                                </div>
+                                
+                                <textarea
+                                    value={notepadContent}
+                                    onChange={(e) => setNotepadContent(e.target.value)}
+                                    placeholder={language === 'zh' ? 
+                                        '在这里写下你的美好回忆、成就、感谢的话语，或任何能让你感到温暖的文字...\n\n例如：\n• 今天我完成了一个重要的项目\n• 朋友给了我很大的支持\n• 我比昨天的自己更强大了' : 
+                                        'Write your beautiful memories, achievements, words of gratitude, or any text that makes you feel warm...\n\nFor example:\n• Today I completed an important project\n• Friends gave me great support\n• I am stronger than yesterday'}
+                                    style={{
+                                        width: '100%',
+                                        height: '200px',
+                                        padding: '16px',
+                                        border: '2px solid #f3e8ff',
+                                        borderRadius: '12px',
+                                        resize: 'none',
+                                        fontSize: '14px',
+                                        lineHeight: '1.6',
+                                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                                        background: '#fefefe',
+                                        boxSizing: 'border-box'
+                                    }}
+                                />
+                                
+                                <div style={{marginTop: '12px', textAlign: 'center'}}>
+                                    <p style={{fontSize: '12px', color: '#6b7280'}}>
+                                        {language === 'zh' ? 
+                                            `已写入 ${notepadContent.length} 个字符` : 
+                                            `${notepadContent.length} characters written`}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <h4 style={{fontWeight: '600', color: '#374151', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '所有美好回忆' : 'All Beautiful Memories'}
+                                </h4>
+                                
+                                {allMemories.length > 0 ? (
+                                    <div>
+                                        {allMemories.map((memory, index) => (
+                                            <div key={memory.id} className="memory-item">
+                                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+                                                    <div style={{flex: 1}}>
+                                                        <div style={{display: 'flex', alignItems: 'center', marginBottom: '8px'}}>
+                                                            <span style={{
+                                                                background: '#ec4899',
+                                                                color: 'white',
+                                                                fontSize: '14px',
+                                                                padding: '4px 12px',
+                                                                borderRadius: '12px',
+                                                                marginRight: '12px'
+                                                            }}>
+                                                                {index + 1}
+                                                            </span>
+                                                            <h3 style={{fontWeight: '600', fontSize: '16px', margin: 0}}>
+                                                                {memory.title[language]}
+                                                            </h3>
+                                                        </div>
+                                                        <p style={{color: '#374151', fontSize: '14px', lineHeight: '1.5', margin: 0}}>
+                                                            {memory.content[language]}
+                                                        </p>
+                                                    </div>
+                                                    <div style={{marginLeft: '8px'}}>
+                                                        {memory.isNotepad && (
+                                                            <button
+                                                                onClick={() => setNotepadContent('')}
+                                                                style={{
+                                                                    background: '#f59e0b',
+                                                                    color: 'white',
+                                                                    border: 'none',
+                                                                    borderRadius: '6px',
+                                                                    padding: '4px 12px',
+                                                                    cursor: 'pointer',
+                                                                    fontSize: '12px',
+                                                                    marginBottom: '4px'
+                                                                }}
+                                                            >
+                                                                {language === 'zh' ? '清空' : 'Clear'}
+                                                            </button>
+                                                        )}
+                                                        {memory.isDefault && (
+                                                            <button
+                                                                onClick={() => setDefaultMemories(prev => prev.filter(m => m.id !== memory.id))}
+                                                                style={{
+                                                                    background: '#ef4444',
+                                                                    color: 'white',
+                                                                    border: 'none',
+                                                                    borderRadius: '6px',
+                                                                    padding: '4px 12px',
+                                                                    cursor: 'pointer',
+                                                                    fontSize: '12px'
+                                                                }}
+                                                            >
+                                                                {language === 'zh' ? '删除' : 'Delete'}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center" style={{color: '#6b7280', marginTop: '32px'}}>
+                                        <FileText size={48} color="#d1d5db" style={{margin: '0 auto 16px'}} />
+                                        <p style={{marginBottom: '8px', fontWeight: '500'}}>
+                                            {language === 'zh' ? '还没有任何回忆记录' : 'No memory records yet'}
+                                        </p>
+                                        <p style={{fontSize: '14px', padding: '0 16px'}}>
+                                            {language === 'zh' ? 
+                                                '开始记录那些让你感到骄傲和快乐的时刻吧' : 
+                                                'Start recording moments that make you feel proud and happy'}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 混合模式：照片+音乐
+            if (currentView === 'mixed-photo-audio') {
+                if (allPhotos.length === 0 || uploadedAudios.length === 0) {
+                    return (
+                        <div className="container">
+                            <div className="card text-center" style={{marginTop: '80px'}}>
+                                <div style={{display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '24px'}}>
+                                    <Camera size={32} color="#ec4899" />
+                                    <Volume2 size={32} color="#3b82f6" />
+                                </div>
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '需要照片和音频' : 'Photos and Audio Required'}
+                                </h2>
+                                <p style={{color: '#6b7280', marginBottom: '24px'}}>
+                                    {language === 'zh' ? 
+                                        '使用混合模式需要同时有照片和音频文件' : 
+                                        'Mixed mode requires both photos and audio files'}
+                                </p>
+                                <div style={{display: 'flex', gap: '12px', justifyContent: 'center'}}>
+                                    {allPhotos.length === 0 && (
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => setCurrentView('photos')}
+                                        >
+                                            {t.uploadPhotos}
+                                        </button>
+                                    )}
+                                    {uploadedAudios.length === 0 && (
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => setCurrentView('audios')}
+                                        >
+                                            {t.uploadAudios}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                const currentPhoto = allPhotos[currentIndex] || allPhotos[0];
+                return (
+                    <div className="fullscreen-view">
+                        <img
+                            src={currentPhoto.url}
+                            alt={currentPhoto.description[language]}
+                            className="fullscreen-image"
+                        />
+                        
+                        <div className="fullscreen-controls">
+                            <div className="mixed-controls">
+                                <p style={{fontSize: '18px', marginBottom: '8px'}}>
+                                    {currentPhoto.description[language]}
+                                </p>
+                                
+                                {uploadedAudios[currentIndex % uploadedAudios.length] && (
+                                    <div style={{fontSize: '14px', marginBottom: '16px', opacity: 0.8}}>
+                                        🎵 {uploadedAudios[currentIndex % uploadedAudios.length].fileName}
+                                        {isAudioPlaying && (
+                                            <span style={{marginLeft: '8px', color: '#10b981'}}>
+                                                {language === 'zh' ? '播放中...' : 'Playing...'}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+                                
+                                <div style={{display: 'flex', justifyContent: 'center', gap: '12px'}}>
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={stopSOS}
+                                    >
+                                        {t.stop}
+                                    </button>
+                                    {isAudioPlaying && (
+                                        <button
+                                            className="btn btn-warning"
+                                            onClick={pauseAudio}
+                                        >
+                                            {t.pause}
+                                        </button>
+                                    )}
+                                    {!isAudioPlaying && uploadedAudios.length > 0 && (
+                                        <button
+                                            className="btn btn-success"
+                                            onClick={resumeAudio}
+                                        >
+                                            {t.resume}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="progress-indicator">
+                            📸 {currentIndex + 1} / {allPhotos.length}
+                        </div>
+
+                        <div className="duration-indicator">
+                            {photoDuration === 0 && t.permanent}
+                            {photoDuration === 10 && `10 ${t.seconds}`}
+                            {photoDuration === 20 && `20 ${t.seconds}`}
+                            {photoDuration === 60 && `1 ${t.minute}`}
+                            {photoDuration === 300 && `5 ${t.minutes}`}
+                            {photoDuration === 1800 && `30 ${t.minutes}`}
+                        </div>
+                        
+                        <button
+                            className="nav-button left"
+                            onClick={() => setCurrentIndex((prev) => (prev - 1 + allPhotos.length) % allPhotos.length)}
+                        >
+                            ←
+                        </button>
+                        <button
+                            className="nav-button right"
+                            onClick={() => setCurrentIndex((prev) => (prev + 1) % allPhotos.length)}
+                        >
+                            →
+                        </button>
+
+                        <audio 
+                            ref={audioRef} 
+                            style={{ display: 'none' }} 
+                            onEnded={playNextAudio}
+                            onPause={() => setIsAudioPlaying(false)}
+                            onPlay={() => setIsAudioPlaying(true)}
+                            preload="auto"
+                        />
+                    </div>
+                );
+            }
+
+            // 混合模式：回忆+音乐
+            if (currentView === 'mixed-memory-audio') {
+                if (allMemories.length === 0 || uploadedAudios.length === 0) {
+                    return (
+                        <div className="container">
+                            <div className="card text-center" style={{marginTop: '80px'}}>
+                                <div style={{display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '24px'}}>
+                                    <MessageCircle size={32} color="#ec4899" />
+                                    <Volume2 size={32} color="#3b82f6" />
+                                </div>
+                                <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                    {language === 'zh' ? '需要回忆和音频' : 'Memories and Audio Required'}
+                                </h2>
+                                <p style={{color: '#6b7280', marginBottom: '24px'}}>
+                                    {language === 'zh' ? 
+                                        '使用混合模式需要同时有回忆记录和音频文件' : 
+                                        'Mixed mode requires both memory records and audio files'}
+                                </p>
+                                <div style={{display: 'flex', gap: '12px', justifyContent: 'center'}}>
+                                    {allMemories.length === 0 && (
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => setCurrentView('memories')}
+                                        >
+                                            {t.writeMemory}
+                                        </button>
+                                    )}
+                                    {uploadedAudios.length === 0 && (
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => setCurrentView('audios')}
+                                        >
+                                            {t.uploadAudios}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                const currentMemory = allMemories[currentIndex] || allMemories[0];
+                return (
+                    <div className="container">
+                        <div className="card text-center" style={{marginTop: '40px'}}>
+                            <MessageCircle size={64} color="#ec4899" style={{margin: '0 auto 24px'}} />
+                            <h2 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '16px'}}>
+                                {currentMemory.title[language]}
+                            </h2>
+                            
+                            <div style={{
+                                background: 'linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%)',
+                                border: '1px solid #d946ef',
+                                padding: '24px',
+                                borderRadius: '12px',
+                                marginBottom: '16px',
+                                maxHeight: '300px',
+                                overflowY: 'auto'
+                            }}>
+                                <p style={{
+                                    color: '#374151',
+                                    lineHeight: '1.6',
+                                    whiteSpace: 'pre-wrap',
+                                    textAlign: 'left',
+                                    margin: 0
+                                }}>
+                                    {currentMemory.content[language]}
+                                </p>
+                            </div>
+                            
+                            {uploadedAudios[currentIndex % uploadedAudios.length] && (
+                                <div style={{
+                                    background: 'linear-gradient(135derg, #dbeafe 0%, #bfdbfe 100%)',
+                                    border: '1px solid #3b82f6',
+                                    padding: '12px',
+                                    borderRadius: '12px',
+                                    marginBottom: '16px'
+                                }}>
+                                    <div style={{fontSize: '14px', color: '#374151'}}>
+                                        🎵 {uploadedAudios[currentIndex % uploadedAudios.length].fileName}
+                                        {isAudioPlaying && (
+                                            <span style={{marginLeft: '8px', color: '#10b981', fontWeight: '600'}}>
+                                                {language === 'zh' ? '播放中...' : 'Playing...'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            <p style={{fontSize: '14px', color: '#8b5cf6', marginBottom: '16px'}}>
+                                {language === 'zh' ? 
+                                    `回忆: ${currentIndex + 1} / ${allMemories.length}` : 
+                                    `Memory: ${currentIndex + 1} / ${allMemories.length}`}
+                            </p>
+                            
+                            <div style={{display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '16px'}}>
+                                <button
+                                    className="btn btn-danger"
+                                    onClick={stopSOS}
+                                >
+                                    {t.stop}
+                                </button>
+                                {isAudioPlaying && (
+                                    <button
+                                        className="btn btn-warning"
+                                        onClick={pauseAudio}
+                                    >
+                                        {t.pause}
+                                    </button>
+                                )}
+                                {!isAudioPlaying && uploadedAudios.length > 0 && (
+                                    <button
+                                        className="btn btn-success"
+                                        onClick={resumeAudio}
+                                    >
+                                        {t.resume}
+                                    </button>
+                                )}
+                            </div>
+
+                            {allMemories.length > 1 && (
+                                <div style={{display: 'flex', justifyContent: 'center', gap: '8px'}}>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            const prevIndex = (currentIndex - 1 + allMemories.length) % allMemories.length;
+                                            setCurrentIndex(prevIndex);
+                                        }}
+                                        style={{padding: '8px 16px', fontSize: '14px'}}
+                                    >
+                                        {language === 'zh' ? '← 上一个' : '← Previous'}
+                                    </button>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            const nextIndex = (currentIndex + 1) % allMemories.length;
+                                            setCurrentIndex(nextIndex);
+                                        }}
+                                        style={{padding: '8px 16px', fontSize: '14px'}}
+                                    >
+                                        {language === 'zh' ? '下一个 →' : 'Next →'}
+                                    </button>
+                                </div>
+                            )}
+
+                            <audio 
+                                ref={audioRef} 
+                                style={{ display: 'none' }} 
+                                onEnded={playNextAudio}
+                                onPause={() => setIsAudioPlaying(false)}
+                                onPlay={() => setIsAudioPlaying(true)}
+                                preload="auto"
+                            />
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
         };
 
         ReactDOM.render(React.createElement(EmotionalSupportApp), document.getElementById('root'));
