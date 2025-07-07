@@ -1,8 +1,7 @@
 {
-  "name": "情绪支持助手 - Emotional Support Assistant",
-  "short_name": "情绪助手",
-  "description": "你不是一个人，我们在这里陪伴你。Your personal companion for emotional support and comfort.",
-  "id": "com.emotionalsupport.assistant",
+  "name": "Emotional Support Assistant",
+  "short_name": "ESA",
+  "description": "Your personal companion for emotional support and comfort",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -10,8 +9,6 @@
   "background_color": "#fdf2f8",
   "theme_color": "#ec4899",
   "categories": ["lifestyle", "health", "wellness"],
-  "lang": "zh-CN",
-  "dir": "ltr",
   "icons": [
     {
       "src": "icon-192.png",
@@ -32,21 +29,21 @@
   ],
   "shortcuts": [
     {
-      "name": "SOS紧急安抚",
+      "name": "SOS Emergency Comfort",
       "short_name": "SOS",
-      "description": "快速启动紧急安抚功能",
+      "description": "Quickly launch emergency comfort",
       "url": "/?sos=true"
     },
     {
-      "name": "安全照片",
-      "short_name": "照片",
-      "description": "查看安全照片",
+      "name": "Safe Photos",
+      "short_name": "Photos",
+      "description": "View safe photos",
       "url": "/?view=photos"
     },
     {
-      "name": "温暖声音",
-      "short_name": "音频",
-      "description": "播放温暖声音",
+      "name": "Warm Sounds",
+      "short_name": "Audios",
+      "description": "Play warm sounds",
       "url": "/?view=audios"
     }
   ],
