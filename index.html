@@ -564,7 +564,7 @@
                     )}
                   </div>
 
-                  {/* 设置区域 */}
+                  {/* 照片设置区域 - 恢复显示 */}
                   <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md mb-6">
                     <h3 className="font-semibold text-gray-800 mb-4 text-center">{t.photoSettings}</h3>
                     
@@ -595,15 +595,15 @@
                     </div>
                   </div>
 
-                  {/* 功能卡片 */}
+                  {/* 功能卡片 - 修复对齐问题 */}
                   <div className="grid grid-cols-1 gap-4">
                     <div 
                       onClick={() => setCurrentView('photos')}
                       className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
                     >
                       <div className="flex items-center">
-                        <Camera className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
+                        <Camera className="w-8 h-8 text-pink-500 mr-3 flex-shrink-0" />
+                        <div className="flex-1">
                           <h3 className="font-semibold text-gray-800">{t.safePhotos}</h3>
                           <p className="text-sm text-gray-600">{allPhotos.length} {t.photosCount}</p>
                         </div>
@@ -615,8 +615,8 @@
                       className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
                     >
                       <div className="flex items-center">
-                        <Mic className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
+                        <Mic className="w-8 h-8 text-pink-500 mr-3 flex-shrink-0" />
+                        <div className="flex-1">
                           <h3 className="font-semibold text-gray-800">{t.supportSounds}</h3>
                           <p className="text-sm text-gray-600">{uploadedAudios.length} {t.audiosCount}</p>
                         </div>
@@ -628,8 +628,8 @@
                       className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
                     >
                       <div className="flex items-center">
-                        <MessageCircle className="w-8 h-8 text-pink-500 mr-3" />
-                        <div>
+                        <MessageCircle className="w-8 h-8 text-pink-500 mr-3 flex-shrink-0" />
+                        <div className="flex-1">
                           <h3 className="font-semibold text-gray-800">{t.positiveMemories}</h3>
                           <p className="text-sm text-gray-600">{allMemories.length} {t.memoriesCount}</p>
                         </div>
