@@ -1,819 +1,456 @@
-<button
-                        onClick={() => {
-                          const nextIndex = (currentIndex + 1) % allMemories.length;
-                          setCurrentIndex(nextIndex);
-                        }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
-                      >
-                        {language === 'zh' ? '下一个 →' : 'Next →'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }
-
-          // 记忆视图 - 增加上传功能
-          if (currentView === 'memories') {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-4">
-                <div className="max-w-md mx-auto pt-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <button
-                      onClick={() => setCurrentView('main')}
-                      className="text-purple-500 font-semibold"
-                    >
-                      {t.back}
-                    </button>
-                    <h2 className="text-xl font-bold text-center">{t.yourMemories}</h2>
-                    <div></div>
-                  </div>
-
-                  {/* 心灵笔记区域 - 替代文档上传 */}
-                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
-                    <h3 className="font-semibold mb-4 text-center">
-                      {language === 'zh' ? '✨ 心灵笔记 ✨' : '✨ Heart Notes ✨'}
-                    </h3>
-                    
-                    {/* 温暖的使用说明 */}
-                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
-                      <p className="text-sm text-gray-700 leading-relaxed text-center">
-                        {language === 'zh' ? 
-                          '💝 在这里写下那些温暖的话语，记录美好的时刻，或是给自己的鼓励。在需要的时候，这些文字会成为你内心的光芒。' : 
-                          '💝 Write warm words here, record beautiful moments, or give yourself encouragement. When needed, these words will become the light in your heart.'}
-                      </p>
-                    </div>
-                    
-                    <textarea
-                      value={notepadContent}
-                      onChange={(e) => setNotepadContent(e.target.value)}
-                      placeholder={language === 'zh' ? 
-                        '在这里写下你的美好回忆、成就、感谢的话语，或任何能让你感到温暖的文字...\n\n例如：\n• 今天我完成了一个重要的项目\n• 朋友给了我很大的支持\n• 我比昨天的自己更强大了' : 
-                        'Write your beautiful memories, achievements, words of gratitude, or any text that makes you feel warm...\n\nFor example:\n• Today I completed an important project\n• Friends gave me great support\n• I am stronger than yesterday'}
-                      className="w-full h-48 p-4 border border-pink-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent bg-white shadow-inner"
-                      style={{
-                        fontFamily: 'system-ui, -apple-system, sans-serif',
-                        fontSize: '14px',
-                        lineHeight: '1.6'
-                      }}
-                    />
-                    
-                    <div className="mt-3 text-center">
-                      <p className="text-xs text-gray-500">
-                        {language === 'zh' ? 
-                          `已写入 ${notepadContent.length} 个字符` : 
-                          `${notepadContent.length} characters written`}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* 回忆列表 - 简化显示 */}
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-gray-800">
-                      {language === 'zh' ? '所有美好回忆' : 'All Beautiful Memories'}
-                    </h4>
-                    {allMemories.map((memory, index) => (
-                      <div 
-                        key={memory.id} 
-                        className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md relative"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center mb-2">
-                              <span className="bg-pink-500 text-white text-sm px-3 py-1 rounded-full mr-3 flex-shrink-0">
-                                {index + 1}
-                              </span>
-                              <h3 className="font-semibold text-lg">{memory.title[language]}</h3>
-                            </div>
-                            <p className="text-gray-700 text-sm leading-relaxed">{memory.content[language]}</p>
-                          </div>
-                          <div className="ml-2 flex-shrink-0">
-                            {memory.isNotepad && (
-                              <button
-                                onClick={() => setNotepadContent('')}
-                                className="bg-yellow-500 text-white px-3 py-1 rounded text-xs hover:bg-yellow-600 transition-colors"
-                              >
-                                {language === 'zh' ? '清空' : 'Clear'}
-                              </button>
-                            )}
-                            {memory.isDefault && (
-                              <button
-                                onClick={() => setDefaultMemories(prev => prev.filter(m => m.id !== memory.id))}
-                                className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition-colors"
-                              >
-                                {language === 'zh' ? '删除' : 'Delete'}
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* 空状态 */}
-                  {allMemories.length === 0 && (
-                    <div className="text-center text-gray-500 mt-8">
-                      <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p className="mb-2 font-medium">
-                        {language === 'zh' ? '还没有任何回忆记录' : 'No memory records yet'}
-                      </p>
-                      <p className="text-sm px-4">
-                        {language === 'zh' ? 
-                          '开始记录那些让你感到骄傲和快乐的时刻吧' : 
-                          'Start recording moments that make you feel proud and happy'}
-                      </p>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={stopSOS}
-                    className="w-full mt-6 bg-purple-500 text-white py-3 rounded-lg font-semibold"
-                  >
-                    {t.returnHome}
-                  </button>
-                </div>
-              </div>
-            );
-          }
-
-          // 音频管理视图 - 包含新的拖拽排序功能
-          if (currentView === 'audios') {
-            return (
-              <div className="min-h-screen bg-gray-50 p-4">
-                <div className="max-w-md mx-auto">
-                  <div className="flex items-center justify-between mb-6 pt-8">
-                    <button
-                      onClick={() => setCurrentView('main')}
-                      className="text-blue-500 font-semibold"
-                    >
-                      {t.back}
-                    </button>
-                    <h2 className="text-xl font-bold">{t.supportSounds}</h2>
-                    <div></div>
-                  </div>
-
-                  {/* 文件上传区域 */}
-                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
-                    <h3 className="font-semibold mb-4 text-center">
-                      {language === 'zh' ? '上传音频文件' : 'Upload Audio Files'}
-                    </h3>
-                    
-                    {/* 温暖的使用说明 */}
-                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
-                      <p className="text-sm text-gray-700 leading-relaxed text-center">
-                        {language === 'zh' ? 
-                          '💝 使用手机录音记录家人朋友的温暖话语，或上传让你感到安心的音乐。在紧张焦虑时，这些熟悉的声音会像拥抱一样陪伴你，提醒你并不孤单。' : 
-                          '💝 Record warm words from family and friends, or upload music that brings you comfort. During anxious moments, these familiar sounds will embrace you like a hug, reminding you that you are not alone.'}
-                      </p>
-                    </div>
-                    
-                    <p className="text-sm text-gray-600 mb-4 text-center">
-                      {language === 'zh' ? 
-                        '支持格式: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A' : 
-                        'Supported: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A'}
-                    </p>
-                    
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="audio/*,.mp3,.mp4,.wav,.flac,.aac,.amr,.ogg,.m4a,.wma"
-                        multiple
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files);
-                          files.forEach((file, index) => {
-                            const url = URL.createObjectURL(file);
-                            const newAudio = {
-                              id: Date.now() + index,
-                              fileName: file.name,
-                              audioUrl: url,
-                              fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                              fileType: file.type || 'Unknown'
-                            };
-                            setUploadedAudios(prev => [...prev, newAudio]);
-                          });
-                          e.target.value = ''; // 清空输入，允许重复上传相同文件
-                        }}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        id="audioUpload"
-                      />
-                      <label 
-                        htmlFor="audioUpload"
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-pink-300 rounded-lg cursor-pointer hover:border-pink-500 hover:bg-pink-100 transition-all"
-                      >
-                        <Mic className="w-8 h-8 text-gray-400 mb-2" />
-                        <p className="text-sm text-gray-600 text-center px-4">
-                          {language === 'zh' ? 
-                            '点击选择音频文件或拖拽到这里' : 
-                            'Click to select audio files or drag them here'}
-                        </p>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* 音频列表 - 包含拖拽排序功能 */}
-                  {uploadedAudios.length > 0 && (
-                    <div className="space-y-4">
-                      <h4 className="font-semibold text-gray-800">
-                        {language === 'zh' ? '已上传的音频文件 (拖拽重新排序)' : 'Uploaded Audio Files (Drag to Reorder)'}
-                      </h4>
-                      {uploadedAudios.map((audio, index) => (
-                        <div 
-                          key={audio.id} 
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, index, 'audio')}
-                          onDragOver={(e) => handleDragOver(e, index)}
-                        onDragLeave={handleDragLeave}
-                        onDrop={(e) => handleDrop(e, index, 'photo')}
-                        onDragEnd={handleDragEnd}
-                        className={`relative cursor-move transition-all duration-200 ${
-                          draggedItem && draggedItem.index === index && draggedItem.type === 'photo' ? 'opacity-50 scale-95' : ''
-                        } ${
-                          dragOverIndex === index && draggedItem !== null && draggedItem.type === 'photo' && draggedItem.index !== index 
-                            ? 'border-2 border-pink-400 border-dashed transform scale-105 rounded-lg' 
-                            : ''
-                        }`}
-                      >
-                        <img
-                          src={photo.url}
-                          alt={photo.description[language]}
-                          className="w-full object-cover rounded-lg"
-                          style={{
-                            height: 'auto',
-                            aspectRatio: '4/3',
-                            maxHeight: '200px'
-                          }}
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 rounded-b-lg">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center flex-1 min-w-0">
-                              <span className="bg-pink-500 text-white text-xs px-2 py-1 rounded-full mr-2 flex-shrink-0">
-                                {index + 1}
-                              </span>
-                              <p className="text-xs truncate">{photo.description[language]}</p>
-                            </div>
-                            <div className="flex space-x-1 ml-2 flex-shrink-0">
-                              {index > 0 && (
-                                <button
-                                  onClick={() => {
-                                    const newPhotos = [...allPhotos];
-                                    const temp = newPhotos[index];
-                                    newPhotos[index] = newPhotos[index - 1];
-                                    newPhotos[index - 1] = temp;
-                                    // 更新用户照片状态
-                                    const userPhotos = newPhotos.filter(p => !p.isDefault);
-                                    setUploadedPhotos(userPhotos);
-                                  }}
-                                  className="bg-blue-500 text-white w-6 h-6 rounded text-xs hover:bg-blue-600 transition-colors flex items-center justify-center"
-                                >
-                                  ↑
-                                </button>
-                              )}
-                              {index < allPhotos.length - 1 && (
-                                <button
-                                  onClick={() => {
-                                    const newPhotos = [...allPhotos];
-                                    const temp = newPhotos[index];
-                                    newPhotos[index] = newPhotos[index + 1];
-                                    newPhotos[index + 1] = temp;
-                                    // 更新用户照片状态
-                                    const userPhotos = newPhotos.filter(p => !p.isDefault);
-                                    setUploadedPhotos(userPhotos);
-                                  }}
-                                  className="bg-blue-500 text-white w-6 h-6 rounded text-xs hover:bg-blue-600 transition-colors flex items-center justify-center"
-                                >
-                                  ↓
-                                </button>
-                              )}
-                              <button
-                                onClick={() => {
-                                  if (photo.isDefault) {
-                                    setDefaultPhotos(prev => prev.filter(p => p.id !== photo.id));
-                                  } else {
-                                    setUploadedPhotos(prev => prev.filter(p => p.id !== photo.id));
-                                    URL.revokeObjectURL(photo.url);
-                                  }
-                                }}
-                                className="bg-red-500 text-white w-6 h-6 rounded text-xs hover:bg-red-600 transition-colors flex items-center justify-center"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* 空状态 */}
-                  {allPhotos.length === 0 && (
-                    <div className="text-center text-gray-500 mt-8">
-                      <Camera className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p className="mb-2 font-medium">
-                        {language === 'zh' ? '还没有任何照片' : 'No photos yet'}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }
-
-          return null;
-        };
-
-        ReactDOM.render(React.createElement(EmotionalSupportApp), document.getElementById('root'));
-    </script>
-
-    <!-- PWA安装和Service Worker脚本 - 新增 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情绪支持助手</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="情绪支持助手 - 你不是一个人，我们在这里陪伴你">
+    <meta name="theme-color" content="#EC4899">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="情绪支持助手">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="icon-128x128.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="48x48" href="icon-48x48.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="icon-96x96.png">
+    <link rel="icon" type="image/png" sizes="384x384" href="icon-384x384.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+    
+    <!-- iOS Splash Screens (optional but recommended) -->
+    <link rel="apple-touch-startup-image" href="screenshot1.png">
+    
+    <!-- External Scripts -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- PWA Service Worker Registration -->
     <script>
-        let deferredPrompt;
-        let installPromptShown = false;
-
-        // PWA初始化
-        window.addEventListener('load', () => {
-            // 隐藏加载屏幕
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loading-screen');
-                if (loadingScreen) {
-                    loadingScreen.classList.add('hidden');
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                    }, 500);
-                }
-            }, 2000);
-
-            // 检查是否需要显示安装提示
-            setTimeout(() => {
-                if (deferredPrompt && !isAppInstalled()) {
-                    showInstallPrompt();
-                }
-            }, 5000);
-        });
-
-        // 检查应用是否已安装
-        function isAppInstalled() {
-            return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.navigator.standalone === true;
-        }
-
-        // 显示安装提示
-        function showInstallPrompt() {
-            if (!installPromptShown && !isAppInstalled() && deferredPrompt) {
-                const prompt = document.getElementById('install-prompt');
-                if (prompt) {
-                    prompt.classList.add('show');
-                    installPromptShown = true;
-                }
-            }
-        }
-
-        // 安装应用
-        async function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`用户选择安装结果: ${outcome}`);
-                deferredPrompt = null;
-                dismissInstall();
-            }
-        }
-
-        // 关闭安装提示
-        function dismissInstall() {
-            const prompt = document.getElementById('install-prompt');
-            if (prompt) {
-                prompt.classList.remove('show');
-            }
-        }
-
-        // 监听安装提示事件
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            console.log('PWA安装提示已捕获');
-        });
-
-        // 监听应用安装事件
-        window.addEventListener('appinstalled', (evt) => {
-            console.log('应用已成功安装');
-            dismissInstall();
-        });
-
-        // Service Worker注册
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', async () => {
-                try {
-                    const registration = await navigator.serviceWorker.register('/sw.js', {
-                        scope: '/'
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }, function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
                     });
-                    
-                    console.log('Service Worker注册成功:', registration.scope);
-                    
-                    // 监听Service Worker更新
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                if (confirm('新版本已就绪，是否立即更新？')) {
-                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                    
-                } catch (error) {
-                    console.error('Service Worker注册失败:', error);
-                }
             });
         }
-
-        // 防止iOS双击缩放
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-        // 处理可见性变化
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-                console.log('应用变为可见');
-            } else {
-                console.log('应用变为隐藏');
-            }
-        });
-
-        // 处理网络状态
-        window.addEventListener('online', () => {
-            console.log('应用已连接网络');
-        });
-
-        window.addEventListener('offline', () => {
-            console.log('应用已离线');
-        });
-
-        // 性能监控
-        window.addEventListener('load', () => {
-            if ('performance' in window) {
-                const perfData = performance.getEntriesByType('navigation')[0];
-                console.log('页面加载时间:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
-            }
-        });
-
-        // 全局错误处理
-        window.addEventListener('error', (event) => {
-            console.error('全局错误:', event.error);
-        });
-
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('未处理的Promise拒绝:', event.reason);
-            event.preventDefault();
-        });
     </script>
-</body>
-</html> => handleDragOver(e, index)}
-                          onDragLeave={handleDragLeave}
-                          onDrop={(e) => handleDrop(e, index, 'audio')}
-                          onDragEnd={handleDragEnd}
-                          className={`bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-move transition-all duration-200 ${
-                            draggedItem && draggedItem.index === index && draggedItem.type === 'audio' ? 'opacity-50 scale-95' : ''
-                          } ${
-                            dragOverIndex === index && draggedItem !== null && draggedItem.type === 'audio' && draggedItem.index !== index 
-                              ? 'border-2 border-pink-400 border-dashed transform scale-105' 
-                              : 'border-pink-100'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center flex-1 min-w-0">
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center">
-                                  <span className="bg-pink-500 text-white text-sm px-3 py-1 rounded-full mr-3 flex-shrink-0">
-                                    {index + 1}
-                                  </span>
-                                  <p className="font-semibold text-sm truncate">{audio.fileName}</p>
-                                </div>
-                                <p className="text-xs text-gray-500 mt-1">{audio.fileSize} • {audio.fileType}</p>
-                              </div>
-                            </div>
-                            <div className="flex flex-col space-y-2 ml-2 flex-shrink-0">
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={() => playAudio(audio.audioUrl)}
-                                  className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors"
-                                >
-                                  {language === 'zh' ? '播放' : 'Play'}
-                                </button>
-                                {isAudioPlaying && (
-                                  <button
-                                    onClick={stopAudio}
-                                    className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600 transition-colors"
-                                  >
-                                    {language === 'zh' ? '停止' : 'Stop'}
-                                  </button>
-                                )}
-                              </div>
-                              <div className="flex space-x-2">
-                                {index > 0 && (
-                                  <button
-                                    onClick={() => {
-                                      const newAudios = [...uploadedAudios];
-                                      const temp = newAudios[index];
-                                      newAudios[index] = newAudios[index - 1];
-                                      newAudios[index - 1] = temp;
-                                      setUploadedAudios(newAudios);
-                                    }}
-                                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600 transition-colors"
-                                  >
-                                    ↑
-                                  </button>
-                                )}
-                                {index < uploadedAudios.length - 1 && (
-                                  <button
-                                    onClick={() => {
-                                      const newAudios = [...uploadedAudios];
-                                      const temp = newAudios[index];
-                                      newAudios[index] = newAudios[index + 1];
-                                      newAudios[index + 1] = temp;
-                                      setUploadedAudios(newAudios);
-                                    }}
-                                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600 transition-colors"
-                                  >
-                                    ↓
-                                  </button>
-                                )}
-                                <button
-                                  onClick={() => {
-                                    setUploadedAudios(prev => prev.filter(a => a.id !== audio.id));
-                                    URL.revokeObjectURL(audio.audioUrl);
-                                  }}
-                                  className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors"
-                                >
-                                  删
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+</head>
+<body>
+    <div id="root"></div>
 
-                  {/* 空状态 */}
-                  {uploadedAudios.length === 0 && (
-                    <div className="text-center text-gray-500 mt-8">
-                      <Mic className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p className="mb-2 font-medium">
-                        {language === 'zh' ? '还没有上传任何音频文件' : 'No audio files uploaded yet'}
-                      </p>
-                      <p className="text-sm px-4">
-                        {language === 'zh' ? 
-                          '开始收集那些能给你力量的声音吧 - 也许是妈妈的叮咛，朋友的鼓励，或是你最爱的歌曲' : 
-                          'Start collecting sounds that give you strength - maybe mom\'s caring words, a friend\'s encouragement, or your favorite song'}
-                      </p>
-                    </div>
-                  )}
+    <script type="text/babel">
+        const { useState, useRef } = React;
 
-                  {/* 隐藏的音频播放器 */}
-                  <audio 
-                    ref={audioRef} 
-                    style={{ display: 'none' }} 
-                    onEnded={() => setIsAudioPlaying(false)}
-                    onPause={() => setIsAudioPlaying(false)}
-                    onPlay={() => setIsAudioPlaying(true)}
-                    preload="auto" // 预加载音频以减少延迟
-                  />
-                </div>
-              </div>
-            );
-          }
+        // 简单的SVG图标组件
+        const Heart = ({ className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        );
 
-          // SOS音频播放视图
-          if (currentView === 'audio') {
-            if (uploadedAudios.length === 0) {
-              return (
-                <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 p-4 flex items-center justify-center">
-                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-md">
-                    <Mic className="w-16 h-16 text-pink-500 mx-auto mb-4" />
-                    <h2 className="text-xl font-bold mb-4">
-                      {language === 'zh' ? '还没有音频文件' : 'No Audio Files'}
-                    </h2>
-                    <p className="text-gray-600 mb-6">
-                      {language === 'zh' ? 
-                        '请先上传一些音频文件来使用语音功能' : 
-                        'Please upload some audio files to use voice feature'}
-                    </p>
-                    <button
-                      onClick={() => setCurrentView('audios')}
-                      className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
-                    >
-                      {language === 'zh' ? '去上传文件' : 'Upload Files'}
-                    </button>
-                  </div>
-                </div>
-              );
+        const Camera = ({ className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+            </svg>
+        );
+
+        const Mic = ({ className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+        );
+
+        const MessageCircle = ({ className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+        );
+
+        const Globe = ({ className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+        );
+
+        // 新增文档图标
+        const FileText = ({ className }) => (
+          <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <line x1="10" y1="9" x2="8" y2="9"/>
+          </svg>
+        );
+
+        // 新增拖拽手柄图标
+        const DragHandle = ({ className }) => (
+            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+        );
+
+        const EmotionalSupportApp = () => {
+          const [currentView, setCurrentView] = useState('main');
+          const [sosMode, setSosMode] = useState('photo');
+          const [mixedMode, setMixedMode] = useState('photo-audio'); // 'photo-audio' 或 'memory-audio'
+          const [currentIndex, setCurrentIndex] = useState(0);
+          const [language, setLanguage] = useState('zh');
+          const [photoDuration, setPhotoDuration] = useState(12);
+          const [uploadedAudios, setUploadedAudios] = useState([]);
+          const [uploadedPhotos, setUploadedPhotos] = useState([]);
+          const [defaultPhotos, setDefaultPhotos] = useState([
+            { 
+              id: 1, 
+              url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop&q=80', 
+              description: { zh: '和好朋友的合照', en: 'Photo with good friends' },
+              isDefault: true
+            },
+            { 
+              id: 2, 
+              url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&q=80', 
+              description: { zh: '初中时光', en: 'Middle school days' },
+              isDefault: true
+            },
+            { 
+              id: 3, 
+              url: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&h=600&fit=crop&q=80', 
+              description: { zh: '温暖的回忆', en: 'Warm memories' },
+              isDefault: true
             }
+          ]);
+          const [defaultMemories, setDefaultMemories] = useState([
+            { 
+              id: 1, 
+              title: { zh: '第一次获奖', en: 'First Award' }, 
+              content: { zh: '记得那天你特别开心，眼睛都在发光', en: 'Remember how happy you were that day, your eyes were shining' },
+              isDefault: true
+            },
+            { 
+              id: 2, 
+              title: { zh: '和朋友的午餐', en: 'Lunch with Friends' }, 
+              content: { zh: '那次聊天聊到忘记时间，你笑得特别灿烂', en: 'That time you chatted until you forgot the time, you smiled so brightly' },
+              isDefault: true
+            },
+            { 
+              id: 3, 
+              title: { zh: '克服困难', en: 'Overcoming Challenges' }, 
+              content: { zh: '你曾经觉得不可能的事情，最后都做到了', en: 'Things you once thought impossible, you eventually accomplished them all' },
+              isDefault: true
+            }
+          ]);
+          const [notepadContent, setNotepadContent] = useState('');
+          const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+          // 新增拖拽状态
+          const [draggedItem, setDraggedItem] = useState(null);
+          const [dragOverIndex, setDragOverIndex] = useState(null);
+          const intervalRef = useRef(null);
+          const audioRef = useRef(null);
 
-            const currentAudio = uploadedAudios[currentIndex] || uploadedAudios[0];
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 p-4 flex items-center justify-center">
-                <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-md">
-                  <Mic className="w-16 h-16 text-pink-500 mx-auto mb-4" />
-                  <h2 className="text-xl font-bold mb-4">{currentAudio.fileName}</h2>
-                  <p className="text-sm text-gray-500 mb-2">{currentAudio.fileSize}</p>
-                  
-                  {/* 显示当前播放进度 */}
-                  <p className="text-sm text-blue-600 mb-4">
-                    {language === 'zh' ? 
-                      `播放进度: ${currentIndex + 1} / ${uploadedAudios.length}` : 
-                      `Playing: ${currentIndex + 1} / ${uploadedAudios.length}`}
-                  </p>
-                  
-                  {/* 显示播放状态 */}
-                  {isAudioPlaying && (
-                    <div className="mb-4 text-green-600">
-                      <p className="text-sm">
-                        {language === 'zh' ? '🎵 正在播放...' : '🎵 Playing...'}
-                      </p>
-                    </div>
-                  )}
-                  
-                  <div className="flex justify-center space-x-4 mb-4">
-                    {!isAudioPlaying && (
-                      <button
-                        onClick={() => {
-                          if (audioRef.current && currentAudio.audioUrl) {
-                            audioRef.current.src = currentAudio.audioUrl;
-                            audioRef.current.play().then(() => {
-                              setIsAudioPlaying(true);
-                            });
-                          }
-                        }}
-                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
-                      >
-                        {language === 'zh' ? '播放' : 'Play'}
-                      </button>
-                    )}
-                    {isAudioPlaying && (
-                      <button
-                        onClick={stopAudio}
-                        className="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors"
-                      >
-                        {language === 'zh' ? '停止' : 'Stop'}
-                      </button>
-                    )}
-                    <button
-                      onClick={() => {
-                        // 确保停止音频并重置状态
-                        if (audioRef.current) {
-                          audioRef.current.pause();
-                          audioRef.current.currentTime = 0;
-                          setIsAudioPlaying(false);
-                        }
-                        setCurrentView('main');
-                      }}
-                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                      {language === 'zh' ? '返回' : 'Back'}
-                    </button>
-                  </div>
+          // 多语言文本
+          const texts = {
+            zh: {
+              title: '情绪支持助手',
+              subtitle: '你不是一个人，我们在这里陪伴你',
+              sosButton: '🆘 紧急安抚',
+              photoMode: '📸 安全照片',
+              audioMode: '🎵 温暖声音',
+              messageMode: '💭 正面记忆',
+              mixedMode: '🔄 混合模式',
+              photoAudioMode: '📸🎵 照片+音乐',
+              memoryAudioMode: '💭🎵 文字+音乐',
+              safePhotos: '安全照片',
+              supportSounds: '支持声音',
+              positiveMemories: '正面记忆',
+              photosCount: '张照片',
+              audiosCount: '段录音',
+              memoriesCount: '个回忆',
+              stop: '停止',
+              back: '← 返回',
+              yourMemories: '你的美好回忆',
+              returnHome: '返回主页',
+              photoDuration: '照片停留时间',
+              seconds: '秒',
+              minute: '分钟',
+              minutes: '分钟',
+              permanent: '永久',
+              photoSettings: '照片设置',
+              replay: '重播',
+              pause: '暂停',
+              resume: '继续'
+            },
+            en: {
+              title: 'Emotional Support Assistant',
+              subtitle: 'You are not alone, we are here with you',
+              sosButton: '🆘 Emergency Comfort',
+              photoMode: '📸 Safe Photos',
+              audioMode: '🎵 Warm Sounds',
+              messageMode: '💭 Positive Memories',
+              mixedMode: '🔄 Mixed Mode',
+              photoAudioMode: '📸🎵 Photo+Music',
+              memoryAudioMode: '💭🎵 Text+Music',
+              safePhotos: 'Safe Photos',
+              supportSounds: 'Support Sounds',
+              positiveMemories: 'Positive Memories',
+              photosCount: 'photos',
+              audiosCount: 'audios',
+              memoriesCount: 'memories',
+              stop: 'Stop',
+              back: '← Back',
+              yourMemories: 'Your Beautiful Memories',
+              returnHome: 'Return Home',
+              photoDuration: 'Photo Duration',
+              seconds: 'seconds',
+              minute: 'minute',
+              minutes: 'minutes',
+              permanent: 'Permanent',
+              photoSettings: 'Photo Settings',
+              replay: 'Replay',
+              pause: 'Pause',
+              resume: 'Resume'
+            }
+          };
 
-                  {/* 手动切换按钮 */}
-                  {uploadedAudios.length > 1 && (
-                    <div className="flex justify-center space-x-2">
-                      <button
-                        onClick={() => {
-                          const prevIndex = (currentIndex - 1 + uploadedAudios.length) % uploadedAudios.length;
-                          setCurrentIndex(prevIndex);
-                          const prevAudio = uploadedAudios[prevIndex];
-                          if (prevAudio && audioRef.current) {
-                            // 立即切换，无延迟
-                            audioRef.current.src = prevAudio.audioUrl;
-                            audioRef.current.play();
-                          }
-                        }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
-                      >
-                        {language === 'zh' ? '← 上一首' : '← Previous'}
-                      </button>
-                      <button
-                        onClick={() => {
-                          // 立即播放下一首
-                          playNextAudio();
-                        }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
-                      >
-                        {language === 'zh' ? '下一首 →' : 'Next →'}
-                      </button>
-                    </div>
-                  )}
+          const t = texts[language];
 
-                  <audio 
-                    ref={audioRef} 
-                    style={{ display: 'none' }} 
-                    onEnded={playNextAudio} // 音频结束立即播放下一首
-                    onPause={() => setIsAudioPlaying(false)}
-                    onPlay={() => setIsAudioPlaying(true)}
-                    preload="auto" // 预加载音频以减少延迟
-                  />
-                </div>
-              </div>
-            );
-          }
+          // 固定的示例数据 - 现在使用state管理
+          // 合并默认照片和用户上传的照片
+          const allPhotos = [...defaultPhotos, ...uploadedPhotos];
 
-          // 照片管理视图 - 增加上传功能
-          if (currentView === 'photos') {
-            return (
-              <div className="min-h-screen bg-gray-50 p-4">
-                <div className="max-w-md mx-auto">
-                  <div className="flex items-center justify-between mb-6 pt-8">
-                    <button
-                      onClick={() => setCurrentView('main')}
-                      className="text-blue-500 font-semibold"
-                    >
-                      {t.back}
-                    </button>
-                    <h2 className="text-xl font-bold">{t.safePhotos}</h2>
-                    <div></div>
-                  </div>
+          const defaultMemoryData = defaultMemories;
 
-                  {/* 照片上传区域 */}
-                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
-                    <h3 className="font-semibold mb-4 text-center">
-                      {language === 'zh' ? '上传安全照片' : 'Upload Safe Photos'}
-                    </h3>
-                    
-                    {/* 温暖的使用说明 */}
-                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
-                      <p className="text-sm text-gray-700 leading-relaxed text-center">
-                        {language === 'zh' ? 
-                          '📷 上传那些让你感到安全和快乐的照片 - 家人的笑容、朋友的陪伴、美丽的风景，或任何能带给你温暖回忆的瞬间。' : 
-                          '📷 Upload photos that make you feel safe and happy - family smiles, friends\' company, beautiful scenery, or any moments that bring you warm memories.'}
-                      </p>
-                    </div>
-                    
-                    <p className="text-sm text-gray-600 mb-4 text-center">
-                      {language === 'zh' ? 
-                        '支持格式: JPG, PNG, GIF, WEBP, BMP' : 
-                        'Supported: JPG, PNG, GIF, WEBP, BMP'}
-                    </p>
-                    
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp"
-                        multiple
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files);
-                          files.forEach((file, index) => {
-                            const url = URL.createObjectURL(file);
-                            const newPhoto = {
-                              id: Date.now() + index,
-                              fileName: file.name,
-                              url: url,
-                              fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                              description: { 
-                                zh: file.name.replace(/\.[^/.]+$/, ""), 
-                                en: file.name.replace(/\.[^/.]+$/, "") 
-                              },
-                              isDefault: false
-                            };
-                            setUploadedPhotos(prev => [...prev, newPhoto]);
-                          });
-                          e.target.value = '';
-                        }}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        id="photoUpload"
-                      />
-                      <label 
-                        htmlFor="photoUpload"
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-pink-300 rounded-lg cursor-pointer hover:border-pink-500 hover:bg-pink-100 transition-all"
-                      >
-                        <Camera className="w-8 h-8 text-gray-400 mb-2" />
-                        <p className="text-sm text-gray-600 text-center px-4">
-                          {language === 'zh' ? 
-                            '点击选择照片或拖拽到这里' : 
-                            'Click to select photos or drag them here'}
-                        </p>
-                      </label>
-                    </div>
-                  </div>
+          // 合并默认回忆和Notepad内容
+          const allMemories = notepadContent.trim() ? 
+            [...defaultMemoryData, {
+              id: 'notepad',
+              title: { zh: '我的心灵笔记', en: 'My Heart Notes' },
+              content: { zh: notepadContent, en: notepadContent },
+              isNotepad: true
+            }] : defaultMemoryData;
 
-                  {/* 照片网格显示 - 添加拖拽功能 */}
-                  <h4 className="font-semibold text-gray-800 mb-4">
-                    {language === 'zh' ? '所有照片 (拖拽重新排序)' : 'All Photos (Drag to Reorder)'}
-                  </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    {allPhotos.map((photo, index) => (
-                      <div 
-                        key={photo.id} 
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, index, 'photo')}
-                        onDragOver={(e)          const startPhotoSlideshow = () => {
+          // 新增拖拽排序功能 - 通用版本
+          const handleDragStart = (e, index, type) => {
+            setDraggedItem({ index, type });
+            e.dataTransfer.effectAllowed = 'move';
+          };
+
+          const handleDragOver = (e, index) => {
+            e.preventDefault();
+            setDragOverIndex(index);
+          };
+
+          const handleDragLeave = () => {
+            setDragOverIndex(null);
+          };
+
+          const handleDrop = (e, dropIndex, type) => {
+            e.preventDefault();
+            if (draggedItem !== null && draggedItem.index !== dropIndex && draggedItem.type === type) {
+              if (type === 'audio') {
+                const newAudios = [...uploadedAudios];
+                const draggedAudio = newAudios[draggedItem.index];
+                newAudios.splice(draggedItem.index, 1);
+                newAudios.splice(dropIndex, 0, draggedAudio);
+                setUploadedAudios(newAudios);
+              } else if (type === 'photo') {
+                const newPhotos = [...allPhotos];
+                const draggedPhoto = newPhotos[draggedItem.index];
+                newPhotos.splice(draggedItem.index, 1);
+                newPhotos.splice(dropIndex, 0, draggedPhoto);
+                // 分离默认和用户照片
+                const defaultPhotos = newPhotos.filter(p => p.isDefault);
+                const userPhotos = newPhotos.filter(p => !p.isDefault);
+                setUploadedPhotos(userPhotos);
+              } else if (type === 'memory') {
+                const newMemories = [...allMemories];
+                const draggedMemory = newMemories[draggedItem.index];
+                newMemories.splice(draggedItem.index, 1);
+                newMemories.splice(dropIndex, 0, draggedMemory);
+                // 分离默认和用户回忆
+                const userMemories = newMemories.filter(m => !m.isDefault);
+                setUploadedMemories(userMemories);
+              }
+            }
+            setDraggedItem(null);
+            setDragOverIndex(null);
+          };
+
+          const handleDragEnd = () => {
+            setDraggedItem(null);
+            setDragOverIndex(null);
+          };
+
+          // 音频播放控制函数
+          const playAudio = (audioUrl) => {
+            if (audioRef.current) {
+              audioRef.current.src = audioUrl;
+              audioRef.current.play().then(() => {
+                setIsAudioPlaying(true);
+              }).catch(err => {
+                alert(language === 'zh' ? '播放失败，请检查音频格式' : 'Playback failed, check audio format');
+              });
+            }
+          };
+
+          const pauseAudio = () => {
+            if (audioRef.current) {
+              audioRef.current.pause();
+              setIsAudioPlaying(false);
+            }
+          };
+
+          const resumeAudio = () => {
+            if (audioRef.current) {
+              audioRef.current.play().then(() => {
+                setIsAudioPlaying(true);
+              });
+            }
+          };
+
+          const stopAudio = () => {
+            if (audioRef.current) {
+              audioRef.current.pause();
+              audioRef.current.currentTime = 0;
+              setIsAudioPlaying(false);
+            }
+          };
+
+          // SOS按钮功能
+          const handleSOS = () => {
+            setCurrentIndex(0);
+            
+            if (sosMode === 'photo') {
+              startPhotoSlideshow();
+            } else if (sosMode === 'audio') {
+              if (uploadedAudios.length > 0) {
+                setCurrentView('audio');
+                // 最小延迟启动播放
+                setTimeout(() => {
+                  const firstAudio = uploadedAudios[0];
+                  if (firstAudio && audioRef.current) {
+                    audioRef.current.src = firstAudio.audioUrl;
+                    audioRef.current.play().then(() => {
+                      setIsAudioPlaying(true);
+                    }).catch(err => {
+                      console.log('初始播放失败，重试:', err);
+                      setTimeout(() => {
+                        audioRef.current.play();
+                      }, 50);
+                    });
+                  }
+                }, 50); // 减少到最小延迟
+              } else {
+                setCurrentView('audio');
+              }
+            } else if (sosMode === 'message') {
+              if (allMemories.length > 0) {
+                setCurrentView('memories-slideshow');
+              } else {
+                setCurrentView('memories');
+              }
+            } else if (sosMode === 'mixed') {
+              // 根据选择的混合模式启动
+              if (mixedMode === 'photo-audio') {
+                if (allPhotos.length > 0 && uploadedAudios.length > 0) {
+                  setCurrentView('mixed-photo-audio');
+                  // 启动照片幻灯片和音乐播放
+                  if (photoDuration > 0) {
+                    intervalRef.current = setInterval(() => {
+                      setCurrentIndex(prev => (prev + 1) % allPhotos.length);
+                    }, photoDuration * 1000);
+                  }
+                  // 启动音乐播放
+                  setTimeout(() => {
+                    const firstAudio = uploadedAudios[0];
+                    if (firstAudio && audioRef.current) {
+                      audioRef.current.src = firstAudio.audioUrl;
+                      audioRef.current.play().then(() => {
+                        setIsAudioPlaying(true);
+                      }).catch(err => {
+                        console.log('音乐播放失败，重试:', err);
+                        setTimeout(() => {
+                          audioRef.current.play();
+                        }, 50);
+                      });
+                    }
+                  }, 50);
+                } else {
+                  alert(language === 'zh' ? '需要同时有照片和音频文件才能使用此模式' : 'Need both photos and audio files to use this mode');
+                }
+              } else if (mixedMode === 'memory-audio') {
+                if (allMemories.length > 0 && uploadedAudios.length > 0) {
+                  setCurrentView('mixed-memory-audio');
+                  // 启动音乐播放
+                  setTimeout(() => {
+                    const firstAudio = uploadedAudios[0];
+                    if (firstAudio && audioRef.current) {
+                      audioRef.current.src = firstAudio.audioUrl;
+                      audioRef.current.play().then(() => {
+                        setIsAudioPlaying(true);
+                      }).catch(err => {
+                        console.log('音乐播放失败，重试:', err);
+                        setTimeout(() => {
+                          audioRef.current.play();
+                        }, 50);
+                      });
+                    }
+                  }, 50);
+                } else {
+                  alert(language === 'zh' ? '需要同时有回忆和音频文件才能使用此模式' : 'Need both memories and audio files to use this mode');
+                }
+              }
+            }
+          };
+
+          // 播放下一首音频 - 优化为最快切换
+          const playNextAudio = () => {
+            if (uploadedAudios.length > 1) {
+              const nextIndex = (currentIndex + 1) % uploadedAudios.length;
+              setCurrentIndex(nextIndex);
+              const nextAudio = uploadedAudios[nextIndex];
+              if (nextAudio && audioRef.current) {
+                // 立即切换，无延迟
+                audioRef.current.src = nextAudio.audioUrl;
+                audioRef.current.play().catch(err => {
+                  console.log('播放失败，尝试重新播放:', err);
+                  // 如果失败，立即重试
+                  setTimeout(() => {
+                    audioRef.current.play();
+                  }, 50);
+                });
+              }
+            } else if (uploadedAudios.length === 1) {
+              // 如果只有一首歌，立即重新播放
+              if (audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play();
+              }
+            }
+          };
+
+          const startPhotoSlideshow = () => {
             setCurrentView('slideshow');
             if (photoDuration > 0) {
               intervalRef.current = setInterval(() => {
@@ -1368,585 +1005,659 @@
                       >
                         {language === 'zh' ? '下一个 →' : 'Next →'}
                       </button>
-                <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>情绪支持助手</title>
-    
-    <!-- PWA Meta Tags - 新增 -->
-    <meta name="description" content="一个综合性的情绪支持应用，在困难时刻通过照片、音频和正面回忆提供安慰">
-    <meta name="keywords" content="情绪支持,心理健康,冥想,放松,情绪管理,心理辅助">
-    <meta name="author" content="Emotional Support Team">
-    
-    <!-- PWA Display - 新增 -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="EmotionalSupport">
-    <meta name="application-name" content="EmotionalSupport">
-    <meta name="msapplication-TileColor" content="#EC4899">
-    <meta name="msapplication-config" content="/browserconfig.xml">
-    
-    <!-- Theme Colors - 新增 -->
-    <meta name="theme-color" content="#EC4899">
-    <meta name="msapplication-navbutton-color" content="#EC4899">
-    
-    <!-- Manifest - 新增 -->
-    <link rel="manifest" href="/manifest.json">
-    
-    <!-- Favicons and Icons - 新增 -->
-    <link rel="icon" type="image/png" sizes="16x16" href="/icon-48x48.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/icon-48x48.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="/icon-48x48.png">
-    <link rel="icon" type="image/png" sizes="72x72" href="/icon-72x72.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/icon-96x96.png">
-    <link rel="icon" type="image/png" sizes="128x128" href="/icon-128x128.png">
-    <link rel="icon" type="image/png" sizes="144x144" href="/icon-144x144.png">
-    <link rel="icon" type="image/png" sizes="152x152" href="/icon-152x152.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="384x384" href="/icon-384x384.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png">
-    
-    <!-- Apple Touch Icons - 新增 -->
-    <link rel="apple-touch-icon" sizes="57x57" href="/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/icon-128x128.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/icon-128x128.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/icon-192x192.png">
-    
-    <!-- Windows Tiles - 新增 -->
-    <meta name="msapplication-TileImage" content="/icon-144x144.png">
-    <meta name="msapplication-square70x70logo" content="/icon-72x72.png">
-    <meta name="msapplication-square150x150logo" content="/icon-152x152.png">
-    <meta name="msapplication-wide310x150logo" content="/icon-384x384.png">
-    <meta name="msapplication-square310x310logo" content="/icon-384x384.png">
-    
-    <!-- Preconnect to improve performance - 新增 -->
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://images.unsplash.com">
-    
-    <!-- 原始的外部库 -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- PWA CSS样式 - 新增 -->
-    <style>
-        /* 防止iOS缩放 */
-        input, select, textarea {
-            font-size: 16px !important;
-        }
-        
-        /* PWA模式下隐藏滚动条 */
-        @media all and (display-mode: standalone) {
-            body {
-                -webkit-user-select: none;
-                -webkit-touch-callout: none;
-                -webkit-tap-highlight-color: transparent;
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
+          // 记忆视图 - 增加上传功能
+          if (currentView === 'memories') {
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-4">
+                <div className="max-w-md mx-auto pt-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <button
+                      onClick={() => setCurrentView('main')}
+                      className="text-purple-500 font-semibold"
+                    >
+                      {t.back}
+                    </button>
+                    <h2 className="text-xl font-bold text-center">{t.yourMemories}</h2>
+                    <div></div>
+                  </div>
+
+                  {/* 心灵笔记区域 - 替代文档上传 */}
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
+                    <h3 className="font-semibold mb-4 text-center">
+                      {language === 'zh' ? '✨ 心灵笔记 ✨' : '✨ Heart Notes ✨'}
+                    </h3>
+                    
+                    {/* 温暖的使用说明 */}
+                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-gray-700 leading-relaxed text-center">
+                        {language === 'zh' ? 
+                          '💝 在这里写下那些温暖的话语，记录美好的时刻，或是给自己的鼓励。在需要的时候，这些文字会成为你内心的光芒。' : 
+                          '💝 Write warm words here, record beautiful moments, or give yourself encouragement. When needed, these words will become the light in your heart.'}
+                      </p>
+                    </div>
+                    
+                    <textarea
+                      value={notepadContent}
+                      onChange={(e) => setNotepadContent(e.target.value)}
+                      placeholder={language === 'zh' ? 
+                        '在这里写下你的美好回忆、成就、感谢的话语，或任何能让你感到温暖的文字...\n\n例如：\n• 今天我完成了一个重要的项目\n• 朋友给了我很大的支持\n• 我比昨天的自己更强大了' : 
+                        'Write your beautiful memories, achievements, words of gratitude, or any text that makes you feel warm...\n\nFor example:\n• Today I completed an important project\n• Friends gave me great support\n• I am stronger than yesterday'}
+                      className="w-full h-48 p-4 border border-pink-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent bg-white shadow-inner"
+                      style={{
+                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                    />
+                    
+                    <div className="mt-3 text-center">
+                      <p className="text-xs text-gray-500">
+                        {language === 'zh' ? 
+                          `已写入 ${notepadContent.length} 个字符` : 
+                          `${notepadContent.length} characters written`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 回忆列表 - 简化显示 */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-800">
+                      {language === 'zh' ? '所有美好回忆' : 'All Beautiful Memories'}
+                    </h4>
+                    {allMemories.map((memory, index) => (
+                      <div 
+                        key={memory.id} 
+                        className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md relative"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center mb-2">
+                              <span className="bg-pink-500 text-white text-sm px-3 py-1 rounded-full mr-3 flex-shrink-0">
+                                {index + 1}
+                              </span>
+                              <h3 className="font-semibold text-lg">{memory.title[language]}</h3>
+                            </div>
+                            <p className="text-gray-700 text-sm leading-relaxed">{memory.content[language]}</p>
+                          </div>
+                          <div className="ml-2 flex-shrink-0">
+                            {memory.isNotepad && (
+                              <button
+                                onClick={() => setNotepadContent('')}
+                                className="bg-yellow-500 text-white px-3 py-1 rounded text-xs hover:bg-yellow-600 transition-colors"
+                              >
+                                {language === 'zh' ? '清空' : 'Clear'}
+                              </button>
+                            )}
+                            {memory.isDefault && (
+                              <button
+                                onClick={() => setDefaultMemories(prev => prev.filter(m => m.id !== memory.id))}
+                                className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition-colors"
+                              >
+                                {language === 'zh' ? '删除' : 'Delete'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* 空状态 */}
+                  {allMemories.length === 0 && (
+                    <div className="text-center text-gray-500 mt-8">
+                      <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="mb-2 font-medium">
+                        {language === 'zh' ? '还没有任何回忆记录' : 'No memory records yet'}
+                      </p>
+                      <p className="text-sm px-4">
+                        {language === 'zh' ? 
+                          '开始记录那些让你感到骄傲和快乐的时刻吧' : 
+                          'Start recording moments that make you feel proud and happy'}
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={stopSOS}
+                    className="w-full mt-6 bg-purple-500 text-white py-3 rounded-lg font-semibold"
+                  >
+                    {t.returnHome}
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          // 音频管理视图 - 包含新的拖拽排序功能
+          if (currentView === 'audios') {
+            return (
+              <div className="min-h-screen bg-gray-50 p-4">
+                <div className="max-w-md mx-auto">
+                  <div className="flex items-center justify-between mb-6 pt-8">
+                    <button
+                      onClick={() => setCurrentView('main')}
+                      className="text-blue-500 font-semibold"
+                    >
+                      {t.back}
+                    </button>
+                    <h2 className="text-xl font-bold">{t.supportSounds}</h2>
+                    <div></div>
+                  </div>
+
+                  {/* 文件上传区域 */}
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
+                    <h3 className="font-semibold mb-4 text-center">
+                      {language === 'zh' ? '上传音频文件' : 'Upload Audio Files'}
+                    </h3>
+                    
+                    {/* 温暖的使用说明 */}
+                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-gray-700 leading-relaxed text-center">
+                        {language === 'zh' ? 
+                          '💝 使用手机录音记录家人朋友的温暖话语，或上传让你感到安心的音乐。在紧张焦虑时，这些熟悉的声音会像拥抱一样陪伴你，提醒你并不孤单。' : 
+                          '💝 Record warm words from family and friends, or upload music that brings you comfort. During anxious moments, these familiar sounds will embrace you like a hug, reminding you that you are not alone.'}
+                      </p>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4 text-center">
+                      {language === 'zh' ? 
+                        '支持格式: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A' : 
+                        'Supported: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A'}
+                    </p>
+                    
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="audio/*,.mp3,.mp4,.wav,.flac,.aac,.amr,.ogg,.m4a,.wma"
+                        multiple
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files);
+                          files.forEach((file, index) => {
+                            const url = URL.createObjectURL(file);
+                            const newAudio = {
+                              id: Date.now() + index,
+                              fileName: file.name,
+                              audioUrl: url,
+                              fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                              fileType: file.type || 'Unknown'
+                            };
+                            setUploadedAudios(prev => [...prev, newAudio]);
+                          });
+                          e.target.value = ''; // 清空输入，允许重复上传相同文件
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="audioUpload"
+                      />
+                      <label 
+                        htmlFor="audioUpload"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-pink-300 rounded-lg cursor-pointer hover:border-pink-500 hover:bg-pink-100 transition-all"
+                      >
+                        <Mic className="w-8 h-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-600 text-center px-4">
+                          {language === 'zh' ? 
+                            '点击选择音频文件或拖拽到这里' : 
+                            'Click to select audio files or drag them here'}
+                        </p>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* 音频列表 - 包含拖拽排序功能 */}
+                  {uploadedAudios.length > 0 && (
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-gray-800">
+                        {language === 'zh' ? '已上传的音频文件 (拖拽重新排序)' : 'Uploaded Audio Files (Drag to Reorder)'}
+                      </h4>
+                      {uploadedAudios.map((audio, index) => (
+                        <div 
+                          key={audio.id} 
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, index, 'audio')}
+                          onDragOver={(e) => handleDragOver(e, index)}
+                          onDragLeave={handleDragLeave}
+                          onDrop={(e) => handleDrop(e, index, 'audio')}
+                          onDragEnd={handleDragEnd}
+                          className={`bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-move transition-all duration-200 ${
+                            draggedItem && draggedItem.index === index && draggedItem.type === 'audio' ? 'opacity-50 scale-95' : ''
+                          } ${
+                            dragOverIndex === index && draggedItem !== null && draggedItem.type === 'audio' && draggedItem.index !== index 
+                              ? 'border-2 border-pink-400 border-dashed transform scale-105' 
+                              : 'border-pink-100'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center flex-1 min-w-0">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center">
+                                  <span className="bg-pink-500 text-white text-sm px-3 py-1 rounded-full mr-3 flex-shrink-0">
+                                    {index + 1}
+                                  </span>
+                                  <p className="font-semibold text-sm truncate">{audio.fileName}</p>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">{audio.fileSize} • {audio.fileType}</p>
+                              </div>
+                            </div>
+                            <div className="flex flex-col space-y-2 ml-2 flex-shrink-0">
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={() => playAudio(audio.audioUrl)}
+                                  className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors"
+                                >
+                                  {language === 'zh' ? '播放' : 'Play'}
+                                </button>
+                                {isAudioPlaying && (
+                                  <button
+                                    onClick={stopAudio}
+                                    className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600 transition-colors"
+                                  >
+                                    {language === 'zh' ? '停止' : 'Stop'}
+                                  </button>
+                                )}
+                              </div>
+                              <div className="flex space-x-2">
+                                {index > 0 && (
+                                  <button
+                                    onClick={() => {
+                                      const newAudios = [...uploadedAudios];
+                                      const temp = newAudios[index];
+                                      newAudios[index] = newAudios[index - 1];
+                                      newAudios[index - 1] = temp;
+                                      setUploadedAudios(newAudios);
+                                    }}
+                                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600 transition-colors"
+                                  >
+                                    ↑
+                                  </button>
+                                )}
+                                {index < uploadedAudios.length - 1 && (
+                                  <button
+                                    onClick={() => {
+                                      const newAudios = [...uploadedAudios];
+                                      const temp = newAudios[index];
+                                      newAudios[index] = newAudios[index + 1];
+                                      newAudios[index + 1] = temp;
+                                      setUploadedAudios(newAudios);
+                                    }}
+                                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600 transition-colors"
+                                  >
+                                    ↓
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => {
+                                    setUploadedAudios(prev => prev.filter(a => a.id !== audio.id));
+                                    URL.revokeObjectURL(audio.audioUrl);
+                                  }}
+                                  className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors"
+                                >
+                                  删
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* 空状态 */}
+                  {uploadedAudios.length === 0 && (
+                    <div className="text-center text-gray-500 mt-8">
+                      <Mic className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="mb-2 font-medium">
+                        {language === 'zh' ? '还没有上传任何音频文件' : 'No audio files uploaded yet'}
+                      </p>
+                      <p className="text-sm px-4">
+                        {language === 'zh' ? 
+                          '开始收集那些能给你力量的声音吧 - 也许是妈妈的叮咛，朋友的鼓励，或是你最爱的歌曲' : 
+                          'Start collecting sounds that give you strength - maybe mom\'s caring words, a friend\'s encouragement, or your favorite song'}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 隐藏的音频播放器 */}
+                  <audio 
+                    ref={audioRef} 
+                    style={{ display: 'none' }} 
+                    onEnded={() => setIsAudioPlaying(false)}
+                    onPause={() => setIsAudioPlaying(false)}
+                    onPlay={() => setIsAudioPlaying(true)}
+                    preload="auto" // 预加载音频以减少延迟
+                  />
+                </div>
+              </div>
+            );
+          }
+
+          // SOS音频播放视图
+          if (currentView === 'audio') {
+            if (uploadedAudios.length === 0) {
+              return (
+                <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 p-4 flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-md">
+                    <Mic className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+                    <h2 className="text-xl font-bold mb-4">
+                      {language === 'zh' ? '还没有音频文件' : 'No Audio Files'}
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      {language === 'zh' ? 
+                        '请先上传一些音频文件来使用语音功能' : 
+                        'Please upload some audio files to use voice feature'}
+                    </p>
+                    <button
+                      onClick={() => setCurrentView('audios')}
+                      className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
+                    >
+                      {language === 'zh' ? '去上传文件' : 'Upload Files'}
+                    </button>
+                  </div>
+                </div>
+              );
             }
-        }
-        
-        /* 确保移动端全高度 */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-        
-        /* 加载屏幕 */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out;
-        }
-        
-        .loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #EC4899;
-            border-top: 4px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .loading-text {
-            margin-top: 20px;
-            color: #EC4899;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        /* 安装提示样式 */
-        .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #EC4899;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .install-prompt.show {
-            display: block;
-            animation: slideUp 0.3s ease-out;
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-    </style>
-</head>
-<body>
-    <!-- PWA加载屏幕 - 新增 -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">情绪支持助手正在启动...</div>
-    </div>
-    
-    <!-- PWA安装提示 - 新增 -->
-    <div id="install-prompt" class="install-prompt">
-        <span>安装应用到主屏幕，随时获得支持 💝</span>
-        <button onclick="installApp()" style="margin-left: 10px; background: white; color: #EC4899; border: none; padding: 4px 12px; border-radius: 12px; font-weight: 600;">安装</button>
-        <button onclick="dismissInstall()" style="margin-left: 5px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 4px 8px; border-radius: 12px;">×</button>
-    </div>
-    
-    <!-- 原始的React根容器 -->
-    <div id="root"></div>
 
-    <!-- 原始的完整React应用代码 - 保持100%不变 -->
-    <script type="text/babel">
-        const { useState, useRef } = React;
+            const currentAudio = uploadedAudios[currentIndex] || uploadedAudios[0];
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 p-4 flex items-center justify-center">
+                <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-md">
+                  <Mic className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+                  <h2 className="text-xl font-bold mb-4">{currentAudio.fileName}</h2>
+                  <p className="text-sm text-gray-500 mb-2">{currentAudio.fileSize}</p>
+                  
+                  {/* 显示当前播放进度 */}
+                  <p className="text-sm text-blue-600 mb-4">
+                    {language === 'zh' ? 
+                      `播放进度: ${currentIndex + 1} / ${uploadedAudios.length}` : 
+                      `Playing: ${currentIndex + 1} / ${uploadedAudios.length}`}
+                  </p>
+                  
+                  {/* 显示播放状态 */}
+                  {isAudioPlaying && (
+                    <div className="mb-4 text-green-600">
+                      <p className="text-sm">
+                        {language === 'zh' ? '🎵 正在播放...' : '🎵 Playing...'}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-center space-x-4 mb-4">
+                    {!isAudioPlaying && (
+                      <button
+                        onClick={() => {
+                          if (audioRef.current && currentAudio.audioUrl) {
+                            audioRef.current.src = currentAudio.audioUrl;
+                            audioRef.current.play().then(() => {
+                              setIsAudioPlaying(true);
+                            });
+                          }
+                        }}
+                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
+                      >
+                        {language === 'zh' ? '播放' : 'Play'}
+                      </button>
+                    )}
+                    {isAudioPlaying && (
+                      <button
+                        onClick={stopAudio}
+                        className="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors"
+                      >
+                        {language === 'zh' ? '停止' : 'Stop'}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        // 确保停止音频并重置状态
+                        if (audioRef.current) {
+                          audioRef.current.pause();
+                          audioRef.current.currentTime = 0;
+                          setIsAudioPlaying(false);
+                        }
+                        setCurrentView('main');
+                      }}
+                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      {language === 'zh' ? '返回' : 'Back'}
+                    </button>
+                  </div>
 
-        // 简单的SVG图标组件
-        const Heart = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-        );
+                  {/* 手动切换按钮 */}
+                  {uploadedAudios.length > 1 && (
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => {
+                          const prevIndex = (currentIndex - 1 + uploadedAudios.length) % uploadedAudios.length;
+                          setCurrentIndex(prevIndex);
+                          const prevAudio = uploadedAudios[prevIndex];
+                          if (prevAudio && audioRef.current) {
+                            // 立即切换，无延迟
+                            audioRef.current.src = prevAudio.audioUrl;
+                            audioRef.current.play();
+                          }
+                        }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
+                      >
+                        {language === 'zh' ? '← 上一首' : '← Previous'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          // 立即播放下一首
+                          playNextAudio();
+                        }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
+                      >
+                        {language === 'zh' ? '下一首 →' : 'Next →'}
+                      </button>
+                    </div>
+                  )}
 
-        const Camera = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-            </svg>
-        );
+                  <audio 
+                    ref={audioRef} 
+                    style={{ display: 'none' }} 
+                    onEnded={playNextAudio} // 音频结束立即播放下一首
+                    onPause={() => setIsAudioPlaying(false)}
+                    onPlay={() => setIsAudioPlaying(true)}
+                    preload="auto" // 预加载音频以减少延迟
+                  />
+                </div>
+              </div>
+            );
+          }
 
-        const Mic = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/>
-                <line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-        );
+          // 照片管理视图 - 增加上传功能
+          if (currentView === 'photos') {
+            return (
+              <div className="min-h-screen bg-gray-50 p-4">
+                <div className="max-w-md mx-auto">
+                  <div className="flex items-center justify-between mb-6 pt-8">
+                    <button
+                      onClick={() => setCurrentView('main')}
+                      className="text-blue-500 font-semibold"
+                    >
+                      {t.back}
+                    </button>
+                    <h2 className="text-xl font-bold">{t.safePhotos}</h2>
+                    <div></div>
+                  </div>
 
-        const MessageCircle = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
-        );
+                  {/* 照片上传区域 */}
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
+                    <h3 className="font-semibold mb-4 text-center">
+                      {language === 'zh' ? '上传安全照片' : 'Upload Safe Photos'}
+                    </h3>
+                    
+                    {/* 温暖的使用说明 */}
+                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-gray-700 leading-relaxed text-center">
+                        {language === 'zh' ? 
+                          '📷 上传那些让你感到安全和快乐的照片 - 家人的笑容、朋友的陪伴、美丽的风景，或任何能带给你温暖回忆的瞬间。' : 
+                          '📷 Upload photos that make you feel safe and happy - family smiles, friends\' company, beautiful scenery, or any moments that bring you warm memories.'}
+                      </p>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4 text-center">
+                      {language === 'zh' ? 
+                        '支持格式: JPG, PNG, GIF, WEBP, BMP' : 
+                        'Supported: JPG, PNG, GIF, WEBP, BMP'}
+                    </p>
+                    
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp"
+                        multiple
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files);
+                          files.forEach((file, index) => {
+                            const url = URL.createObjectURL(file);
+                            const newPhoto = {
+                              id: Date.now() + index,
+                              fileName: file.name,
+                              url: url,
+                              fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                              description: { 
+                                zh: file.name.replace(/\.[^/.]+$/, ""), 
+                                en: file.name.replace(/\.[^/.]+$/, "") 
+                              },
+                              isDefault: false
+                            };
+                            setUploadedPhotos(prev => [...prev, newPhoto]);
+                          });
+                          e.target.value = '';
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="photoUpload"
+                      />
+                      <label 
+                        htmlFor="photoUpload"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-pink-300 rounded-lg cursor-pointer hover:border-pink-500 hover:bg-pink-100 transition-all"
+                      >
+                        <Camera className="w-8 h-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-600 text-center px-4">
+                          {language === 'zh' ? 
+                            '点击选择照片或拖拽到这里' : 
+                            'Click to select photos or drag them here'}
+                        </p>
+                      </label>
+                    </div>
+                  </div>
 
-        const Globe = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-        );
+                  {/* 照片网格显示 - 添加拖拽功能 */}
+                  <h4 className="font-semibold text-gray-800 mb-4">
+                    {language === 'zh' ? '所有照片 (拖拽重新排序)' : 'All Photos (Drag to Reorder)'}
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    {allPhotos.map((photo, index) => (
+                      <div 
+                        key={photo.id} 
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index, 'photo')}
+                        onDragOver={(e) => handleDragOver(e, index)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, index, 'photo')}
+                        onDragEnd={handleDragEnd}
+                        className={`relative cursor-move transition-all duration-200 ${
+                          draggedItem && draggedItem.index === index && draggedItem.type === 'photo' ? 'opacity-50 scale-95' : ''
+                        } ${
+                          dragOverIndex === index && draggedItem !== null && draggedItem.type === 'photo' && draggedItem.index !== index 
+                            ? 'border-2 border-pink-400 border-dashed transform scale-105 rounded-lg' 
+                            : ''
+                        }`}
+                      >
+                        <img
+                          src={photo.url}
+                          alt={photo.description[language]}
+                          className="w-full object-cover rounded-lg"
+                          style={{
+                            height: 'auto',
+                            aspectRatio: '4/3',
+                            maxHeight: '200px'
+                          }}
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 rounded-b-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center flex-1 min-w-0">
+                              <span className="bg-pink-500 text-white text-xs px-2 py-1 rounded-full mr-2 flex-shrink-0">
+                                {index + 1}
+                              </span>
+                              <p className="text-xs truncate">{photo.description[language]}</p>
+                            </div>
+                            <div className="flex space-x-1 ml-2 flex-shrink-0">
+                              {index > 0 && (
+                                <button
+                                  onClick={() => {
+                                    const newPhotos = [...allPhotos];
+                                    const temp = newPhotos[index];
+                                    newPhotos[index] = newPhotos[index - 1];
+                                    newPhotos[index - 1] = temp;
+                                    // 更新用户照片状态
+                                    const userPhotos = newPhotos.filter(p => !p.isDefault);
+                                    setUploadedPhotos(userPhotos);
+                                  }}
+                                  className="bg-blue-500 text-white w-6 h-6 rounded text-xs hover:bg-blue-600 transition-colors flex items-center justify-center"
+                                >
+                                  ↑
+                                </button>
+                              )}
+                              {index < allPhotos.length - 1 && (
+                                <button
+                                  onClick={() => {
+                                    const newPhotos = [...allPhotos];
+                                    const temp = newPhotos[index];
+                                    newPhotos[index] = newPhotos[index + 1];
+                                    newPhotos[index + 1] = temp;
+                                    // 更新用户照片状态
+                                    const userPhotos = newPhotos.filter(p => !p.isDefault);
+                                    setUploadedPhotos(userPhotos);
+                                  }}
+                                  className="bg-blue-500 text-white w-6 h-6 rounded text-xs hover:bg-blue-600 transition-colors flex items-center justify-center"
+                                >
+                                  ↓
+                                </button>
+                              )}
+                              <button
+                                onClick={() => {
+                                  if (photo.isDefault) {
+                                    setDefaultPhotos(prev => prev.filter(p => p.id !== photo.id));
+                                  } else {
+                                    setUploadedPhotos(prev => prev.filter(p => p.id !== photo.id));
+                                    URL.revokeObjectURL(photo.url);
+                                  }
+                                }}
+                                className="bg-red-500 text-white w-6 h-6 rounded text-xs hover:bg-red-600 transition-colors flex items-center justify-center"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
-        // 新增文档图标
-        const FileText = ({ className }) => (
-          <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14,2 14,8 20,8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <line x1="10" y1="9" x2="8" y2="9"/>
-          </svg>
-        );
+                  {/* 空状态 */}
+                  {allPhotos.length === 0 && (
+                    <div className="text-center text-gray-500 mt-8">
+                      <Camera className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="mb-2 font-medium">
+                        {language === 'zh' ? '还没有任何照片' : 'No photos yet'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }
 
-        // 新增拖拽手柄图标
-        const DragHandle = ({ className }) => (
-            <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
-        );
+          return null;
+        };
 
-        const EmotionalSupportApp = () => {
-          const [currentView, setCurrentView] = useState('main');
-          const [sosMode, setSosMode] = useState('photo');
-          const [mixedMode, setMixedMode] = useState('photo-audio'); // 'photo-audio' 或 'memory-audio'
-          const [currentIndex, setCurrentIndex] = useState(0);
-          const [language, setLanguage] = useState('zh');
-          const [photoDuration, setPhotoDuration] = useState(12);
-          const [uploadedAudios, setUploadedAudios] = useState([]);
-          const [uploadedPhotos, setUploadedPhotos] = useState([]);
-          const [defaultPhotos, setDefaultPhotos] = useState([
-            { 
-              id: 1, 
-              url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '和好朋友的合照', en: 'Photo with good friends' },
-              isDefault: true
-            },
-            { 
-              id: 2, 
-              url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '初中时光', en: 'Middle school days' },
-              isDefault: true
-            },
-            { 
-              id: 3, 
-              url: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&h=600&fit=crop&q=80', 
-              description: { zh: '温暖的回忆', en: 'Warm memories' },
-              isDefault: true
-            }
-          ]);
-          const [defaultMemories, setDefaultMemories] = useState([
-            { 
-              id: 1, 
-              title: { zh: '第一次获奖', en: 'First Award' }, 
-              content: { zh: '记得那天你特别开心，眼睛都在发光', en: 'Remember how happy you were that day, your eyes were shining' },
-              isDefault: true
-            },
-            { 
-              id: 2, 
-              title: { zh: '和朋友的午餐', en: 'Lunch with Friends' }, 
-              content: { zh: '那次聊天聊到忘记时间，你笑得特别灿烂', en: 'That time you chatted until you forgot the time, you smiled so brightly' },
-              isDefault: true
-            },
-            { 
-              id: 3, 
-              title: { zh: '克服困难', en: 'Overcoming Challenges' }, 
-              content: { zh: '你曾经觉得不可能的事情，最后都做到了', en: 'Things you once thought impossible, you eventually accomplished them all' },
-              isDefault: true
-            }
-          ]);
-          const [notepadContent, setNotepadContent] = useState('');
-          const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-          // 新增拖拽状态
-          const [draggedItem, setDraggedItem] = useState(null);
-          const [dragOverIndex, setDragOverIndex] = useState(null);
-          const intervalRef = useRef(null);
-          const audioRef = useRef(null);
-
-          // 多语言文本
-          const texts = {
-            zh: {
-              title: '情绪支持助手',
-              subtitle: '你不是一个人，我们在这里陪伴你',
-              sosButton: '🆘 紧急安抚',
-              photoMode: '📸 安全照片',
-              audioMode: '🎵 温暖声音',
-              messageMode: '💭 正面记忆',
-              mixedMode: '🔄 混合模式',
-              photoAudioMode: '📸🎵 照片+音乐',
-              memoryAudioMode: '💭🎵 文字+音乐',
-              safePhotos: '安全照片',
-              supportSounds: '支持声音',
-              positiveMemories: '正面记忆',
-              photosCount: '张照片',
-              audiosCount: '段录音',
-              memoriesCount: '个回忆',
-              stop: '停止',
-              back: '← 返回',
-              yourMemories: '你的美好回忆',
-              returnHome: '返回主页',
-              photoDuration: '照片停留时间',
-              seconds: '秒',
-              minute: '分钟',
-              minutes: '分钟',
-              permanent: '永久',
-              photoSettings: '照片设置',
-              replay: '重播',
-              pause: '暂停',
-              resume: '继续'
-            },
-            en: {
-              title: 'Emotional Support Assistant',
-              subtitle: 'You are not alone, we are here with you',
-              sosButton: '🆘 Emergency Comfort',
-              photoMode: '📸 Safe Photos',
-              audioMode: '🎵 Warm Sounds',
-              messageMode: '💭 Positive Memories',
-              mixedMode: '🔄 Mixed Mode',
-              photoAudioMode: '📸🎵 Photo+Music',
-              memoryAudioMode: '💭🎵 Text+Music',
-              safePhotos: 'Safe Photos',
-              supportSounds: 'Support Sounds',
-              positiveMemories: 'Positive Memories',
-              photosCount: 'photos',
-              audiosCount: 'audios',
-              memoriesCount: 'memories',
-              stop: 'Stop',
-              back: '← Back',
-              yourMemories: 'Your Beautiful Memories',
-              returnHome: 'Return Home',
-              photoDuration: 'Photo Duration',
-              seconds: 'seconds',
-              minute: 'minute',
-              minutes: 'minutes',
-              permanent: 'Permanent',
-              photoSettings: 'Photo Settings',
-              replay: 'Replay',
-              pause: 'Pause',
-              resume: 'Resume'
-            }
-          };
-
-          const t = texts[language];
-
-          // 固定的示例数据 - 现在使用state管理
-          // 合并默认照片和用户上传的照片
-          const allPhotos = [...defaultPhotos, ...uploadedPhotos];
-
-          const defaultMemoryData = defaultMemories;
-
-          // 合并默认回忆和Notepad内容
-          const allMemories = notepadContent.trim() ? 
-            [...defaultMemoryData, {
-              id: 'notepad',
-              title: { zh: '我的心灵笔记', en: 'My Heart Notes' },
-              content: { zh: notepadContent, en: notepadContent },
-              isNotepad: true
-            }] : defaultMemoryData;
-
-          // 新增拖拽排序功能 - 通用版本
-          const handleDragStart = (e, index, type) => {
-            setDraggedItem({ index, type });
-            e.dataTransfer.effectAllowed = 'move';
-          };
-
-          const handleDragOver = (e, index) => {
-            e.preventDefault();
-            setDragOverIndex(index);
-          };
-
-          const handleDragLeave = () => {
-            setDragOverIndex(null);
-          };
-
-          const handleDrop = (e, dropIndex, type) => {
-            e.preventDefault();
-            if (draggedItem !== null && draggedItem.index !== dropIndex && draggedItem.type === type) {
-              if (type === 'audio') {
-                const newAudios = [...uploadedAudios];
-                const draggedAudio = newAudios[draggedItem.index];
-                newAudios.splice(draggedItem.index, 1);
-                newAudios.splice(dropIndex, 0, draggedAudio);
-                setUploadedAudios(newAudios);
-              } else if (type === 'photo') {
-                const newPhotos = [...allPhotos];
-                const draggedPhoto = newPhotos[draggedItem.index];
-                newPhotos.splice(draggedItem.index, 1);
-                newPhotos.splice(dropIndex, 0, draggedPhoto);
-                // 分离默认和用户照片
-                const defaultPhotos = newPhotos.filter(p => p.isDefault);
-                const userPhotos = newPhotos.filter(p => !p.isDefault);
-                setUploadedPhotos(userPhotos);
-              } else if (type === 'memory') {
-                const newMemories = [...allMemories];
-                const draggedMemory = newMemories[draggedItem.index];
-                newMemories.splice(draggedItem.index, 1);
-                newMemories.splice(dropIndex, 0, draggedMemory);
-                // 分离默认和用户回忆
-                const userMemories = newMemories.filter(m => !m.isDefault);
-                setUploadedMemories(userMemories);
-              }
-            }
-            setDraggedItem(null);
-            setDragOverIndex(null);
-          };
-
-          const handleDragEnd = () => {
-            setDraggedItem(null);
-            setDragOverIndex(null);
-          };
-
-          // 音频播放控制函数
-          const playAudio = (audioUrl) => {
-            if (audioRef.current) {
-              audioRef.current.src = audioUrl;
-              audioRef.current.play().then(() => {
-                setIsAudioPlaying(true);
-              }).catch(err => {
-                alert(language === 'zh' ? '播放失败，请检查音频格式' : 'Playback failed, check audio format');
-              });
-            }
-          };
-
-          const pauseAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              setIsAudioPlaying(false);
-            }
-          };
-
-          const resumeAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.play().then(() => {
-                setIsAudioPlaying(true);
-              });
-            }
-          };
-
-          const stopAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              audioRef.current.currentTime = 0;
-              setIsAudioPlaying(false);
-            }
-          };
-
-          // SOS按钮功能
-          const handleSOS = () => {
-            setCurrentIndex(0);
-            
-            if (sosMode === 'photo') {
-              startPhotoSlideshow();
-            } else if (sosMode === 'audio') {
-              if (uploadedAudios.length > 0) {
-                setCurrentView('audio');
-                // 最小延迟启动播放
-                setTimeout(() => {
-                  const firstAudio = uploadedAudios[0];
-                  if (firstAudio && audioRef.current) {
-                    audioRef.current.src = firstAudio.audioUrl;
-                    audioRef.current.play().then(() => {
-                      setIsAudioPlaying(true);
-                    }).catch(err => {
-                      console.log('初始播放失败，重试:', err);
-                      setTimeout(() => {
-                        audioRef.current.play();
-                      }, 50);
-                    });
-                  }
-                }, 50); // 减少到最小延迟
-              } else {
-                setCurrentView('audio');
-              }
-            } else if (sosMode === 'message') {
-              if (allMemories.length > 0) {
-                setCurrentView('memories-slideshow');
-              } else {
-                setCurrentView('memories');
-              }
-            } else if (sosMode === 'mixed') {
-              // 根据选择的混合模式启动
-              if (mixedMode === 'photo-audio') {
-                if (allPhotos.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-photo-audio');
-                  // 启动照片幻灯片和音乐播放
-                  if (photoDuration > 0) {
-                    intervalRef.current = setInterval(() => {
-                      setCurrentIndex(prev => (prev + 1) % allPhotos.length);
-                    }, photoDuration * 1000);
-                  }
-                  // 启动音乐播放
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      audioRef.current.src = firstAudio.audioUrl;
-                      audioRef.current.play().then(() => {
-                        setIsAudioPlaying(true);
-                      }).catch(err => {
-                        console.log('音乐播放失败，重试:', err);
-                        setTimeout(() => {
-                          audioRef.current.play();
-                        }, 50);
-                      });
-                    }
-                  }, 50);
-                } else {
-                  alert(language === 'zh' ? '需要同时有照片和音频文件才能使用此模式' : 'Need both photos and audio files to use this mode');
-                }
-              } else if (mixedMode === 'memory-audio') {
-                if (allMemories.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-memory-audio');
-                  // 启动音乐播放
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      audioRef.current.src = firstAudio.audioUrl;
-                      audioRef.current.play().then(() => {
-                        setIsAudioPlaying(true);
-                      }).catch(err => {
-                        console.log('音乐播放失败，重试:', err);
-                        setTimeout(() => {
-                          audioRef.current.play();
-                        }, 50);
-                      });
-                    }
-                  }, 50);
-                } else {
-                  alert(language === 'zh' ? '需要同时有回忆和音频文件才能使用此模式' : 'Need both memories and audio files to use this mode');
-                }
-              }
-            }
-          };
-
-          // 播放下一首音频 - 优化为最快切换
-          const playNextAudio = () => {
-            if (uploadedAudios.length > 1) {
-              const nextIndex = (currentIndex + 1) % uploadedAudios.length;
-              setCurrentIndex(nextIndex);
-              const nextAudio = uploadedAudios[nextIndex];
-              if (nextAudio && audioRef.current) {
-                // 立即切换，无延迟
-                audioRef.current.src = nextAudio.audioUrl;
-                audioRef.current.play().catch(err => {
-                  console.log('播放失败，尝试重新播放:', err);
-                  // 如果失败，立即重试
-                  setTimeout(() => {
-                    audioRef.current.play();
-                  }, 50);
-                });
-              }
-            } else if (uploadedAudios.length === 1) {
-              // 如果只有一首歌，立即重新播放
-              if (audioRef.current) {
-                audioRef.current.currentTime = 0;
-                audioRef.current.play();
-              }
-            }
-          };
-
-          const startPhotoSlideshow = () => {
-            setCurrentView('slideshow');
-            if (photoDuration > 0) {
-              intervalRef.current = setInterval(()
+        ReactDOM.render(React.createElement(EmotionalSupportApp), document.getElementById('root'));
+    </script>
+</body>
+</html>
