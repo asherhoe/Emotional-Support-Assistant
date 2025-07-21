@@ -234,7 +234,6 @@
             </svg>
         );
 
-        // 新增文档图标
         const FileText = ({ className }) => (
           <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -303,7 +302,6 @@
 
           // PWA初始化
           useEffect(() => {
-            // 处理URL参数
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('sos') === 'true') {
               handleSOS();
@@ -311,7 +309,6 @@
               setCurrentView(urlParams.get('view'));
             }
 
-            // 隐藏加载屏幕
             setTimeout(() => {
               const loadingScreen = document.getElementById('loading-screen');
               if (loadingScreen) {
@@ -322,7 +319,6 @@
               }
             }, 1500);
 
-            // 检查是否需要显示安装提示
             setTimeout(() => {
               if (window.deferredPrompt) {
                 showInstallPrompt();
@@ -330,7 +326,6 @@
             }, 3000);
           }, []);
 
-          // 多语言文本
           const texts = {
             zh: {
               title: '情绪支持助手',
@@ -395,11 +390,7 @@
           };
 
           const t = texts[language];
-
-          // 合并默认照片和用户上传的照片
           const allPhotos = [...defaultPhotos, ...uploadedPhotos];
-
-          // 合并默认回忆和Notepad内容
           const allMemories = notepadContent.trim() ? 
             [...defaultMemories, {
               id: 'notepad',
@@ -408,50 +399,7 @@
               isNotepad: true
             }] : defaultMemories;
 
-          // 拖拽排序功能
-          const handleDragStart = (e, index, type) => {
-            setDraggedItem({ index, type });
-            e.dataTransfer.effectAllowed = 'move';
-          };
-
-          const handleDragOver = (e, index) => {
-            e.preventDefault();
-            setDragOverIndex(index);
-          };
-
-          const handleDragLeave = () => {
-            setDragOverIndex(null);
-          };
-
-          const handleDrop = (e, dropIndex, type) => {
-            e.preventDefault();
-            if (draggedItem !== null && draggedItem.index !== dropIndex && draggedItem.type === type) {
-              if (type === 'audio') {
-                const newAudios = [...uploadedAudios];
-                const draggedAudio = newAudios[draggedItem.index];
-                newAudios.splice(draggedItem.index, 1);
-                newAudios.splice(dropIndex, 0, draggedAudio);
-                setUploadedAudios(newAudios);
-              } else if (type === 'photo') {
-                const newPhotos = [...allPhotos];
-                const draggedPhoto = newPhotos[draggedItem.index];
-                newPhotos.splice(draggedItem.index, 1);
-                newPhotos.splice(dropIndex, 0, draggedPhoto);
-                const defaultPhotos = newPhotos.filter(p => p.isDefault);
-                const userPhotos = newPhotos.filter(p => !p.isDefault);
-                setUploadedPhotos(userPhotos);
-              }
-            }
-            setDraggedItem(null);
-            setDragOverIndex(null);
-          };
-
-          const handleDragEnd = () => {
-            setDraggedItem(null);
-            setDragOverIndex(null);
-          };
-
-          // 音频播放控制函数
+          // 音频播放控制
           const playAudio = (audioUrl) => {
             if (audioRef.current) {
               audioRef.current.src = audioUrl;
@@ -459,21 +407,6 @@
                 setIsAudioPlaying(true);
               }).catch(err => {
                 alert(language === 'zh' ? '播放失败，请检查音频格式' : 'Playback failed, check audio format');
-              });
-            }
-          };
-
-          const pauseAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              setIsAudioPlaying(false);
-            }
-          };
-
-          const resumeAudio = () => {
-            if (audioRef.current) {
-              audioRef.current.play().then(() => {
-                setIsAudioPlaying(true);
               });
             }
           };
@@ -486,7 +419,28 @@
             }
           };
 
-          // SOS按钮功能
+          const playNextAudio = () => {
+            if (uploadedAudios.length > 1) {
+              const nextIndex = (currentIndex + 1) % uploadedAudios.length;
+              setCurrentIndex(nextIndex);
+              const nextAudio = uploadedAudios[nextIndex];
+              if (nextAudio && audioRef.current) {
+                audioRef.current.src = nextAudio.audioUrl;
+                audioRef.current.play().catch(err => {
+                  setTimeout(() => {
+                    audioRef.current.play();
+                  }, 50);
+                });
+              }
+            } else if (uploadedAudios.length === 1) {
+              if (audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play();
+              }
+            }
+          };
+
+          // SOS功能
           const handleSOS = () => {
             setCurrentIndex(0);
             
@@ -501,11 +455,6 @@
                     audioRef.current.src = firstAudio.audioUrl;
                     audioRef.current.play().then(() => {
                       setIsAudioPlaying(true);
-                    }).catch(err => {
-                      console.log('初始播放失败，重试:', err);
-                      setTimeout(() => {
-                        audioRef.current.play();
-                      }, 50);
                     });
                   }
                 }, 50);
@@ -517,76 +466,6 @@
                 setCurrentView('memories-slideshow');
               } else {
                 setCurrentView('memories');
-              }
-            } else if (sosMode === 'mixed') {
-              if (mixedMode === 'photo-audio') {
-                if (allPhotos.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-photo-audio');
-                  if (photoDuration > 0) {
-                    intervalRef.current = setInterval(() => {
-                      setCurrentIndex(prev => (prev + 1) % allPhotos.length);
-                    }, photoDuration * 1000);
-                  }
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      audioRef.current.src = firstAudio.audioUrl;
-                      audioRef.current.play().then(() => {
-                        setIsAudioPlaying(true);
-                      }).catch(err => {
-                        console.log('音乐播放失败，重试:', err);
-                        setTimeout(() => {
-                          audioRef.current.play();
-                        }, 50);
-                      });
-                    }
-                  }, 50);
-                } else {
-                  alert(language === 'zh' ? '需要同时有照片和音频文件才能使用此模式' : 'Need both photos and audio files to use this mode');
-                }
-              } else if (mixedMode === 'memory-audio') {
-                if (allMemories.length > 0 && uploadedAudios.length > 0) {
-                  setCurrentView('mixed-memory-audio');
-                  setTimeout(() => {
-                    const firstAudio = uploadedAudios[0];
-                    if (firstAudio && audioRef.current) {
-                      audioRef.current.src = firstAudio.audioUrl;
-                      audioRef.current.play().then(() => {
-                        setIsAudioPlaying(true);
-                      }).catch(err => {
-                        console.log('音乐播放失败，重试:', err);
-                        setTimeout(() => {
-                          audioRef.current.play();
-                        }, 50);
-                      });
-                    }
-                  }, 50);
-                } else {
-                  alert(language === 'zh' ? '需要同时有回忆和音频文件才能使用此模式' : 'Need both memories and audio files to use this mode');
-                }
-              }
-            }
-          };
-
-          // 播放下一首音频
-          const playNextAudio = () => {
-            if (uploadedAudios.length > 1) {
-              const nextIndex = (currentIndex + 1) % uploadedAudios.length;
-              setCurrentIndex(nextIndex);
-              const nextAudio = uploadedAudios[nextIndex];
-              if (nextAudio && audioRef.current) {
-                audioRef.current.src = nextAudio.audioUrl;
-                audioRef.current.play().catch(err => {
-                  console.log('播放失败，尝试重新播放:', err);
-                  setTimeout(() => {
-                    audioRef.current.play();
-                  }, 50);
-                });
-              }
-            } else if (uploadedAudios.length === 1) {
-              if (audioRef.current) {
-                audioRef.current.currentTime = 0;
-                audioRef.current.play();
               }
             }
           };
@@ -617,7 +496,6 @@
             return (
               <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
                 <div className="max-w-md mx-auto">
-                  {/* 语言切换按钮 */}
                   <div className="flex justify-end pt-4 mb-4">
                     <button
                       onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
@@ -630,14 +508,12 @@
                     </button>
                   </div>
 
-                  {/* 标题 */}
                   <div className="text-center mb-8">
                     <Heart className="w-12 h-12 text-pink-500 mx-auto mb-2" />
                     <h1 className="text-2xl font-bold text-gray-800 mb-2">{t.title}</h1>
                     <p className="text-gray-600">{t.subtitle}</p>
                   </div>
 
-                  {/* SOS 按钮 */}
                   <div className="mb-8">
                     <button
                       onClick={handleSOS}
@@ -646,7 +522,6 @@
                       {t.sosButton}
                     </button>
                     
-                    {/* SOS 模式选择 */}
                     <div className="mt-4 grid grid-cols-2 gap-2">
                       <button
                         onClick={() => setSosMode('photo')}
@@ -673,74 +548,12 @@
                         {t.mixedMode}
                       </button>
                     </div>
-
-                    {/* 混合模式的子选项 */}
-                    {sosMode === 'mixed' && (
-                      <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
-                        <p className="text-sm text-gray-700 mb-3 text-center font-medium">
-                          {language === 'zh' ? '选择混合模式类型:' : 'Choose Mixed Mode Type:'}
-                        </p>
-                        <div className="grid grid-cols-1 gap-2">
-                          <button
-                            onClick={() => setMixedMode('photo-audio')}
-                            className={`py-3 px-4 rounded-lg text-sm transition-colors ${mixedMode === 'photo-audio' ? 'bg-purple-500 text-white' : 'bg-white border border-purple-200 text-gray-700 hover:bg-purple-50'}`}
-                          >
-                            {t.photoAudioMode}
-                            <p className="text-xs mt-1 opacity-80">
-                              {language === 'zh' ? '同时播放照片幻灯片和背景音乐' : 'Play photo slideshow with background music'}
-                            </p>
-                          </button>
-                          <button
-                            onClick={() => setMixedMode('memory-audio')}
-                            className={`py-3 px-4 rounded-lg text-sm transition-colors ${mixedMode === 'memory-audio' ? 'bg-purple-500 text-white' : 'bg-white border border-purple-200 text-gray-700 hover:bg-purple-50'}`}
-                          >
-                            {t.memoryAudioMode}
-                            <p className="text-xs mt-1 opacity-80">
-                              {language === 'zh' ? '显示文字回忆并播放背景音乐' : 'Show text memories with background music'}
-                            </p>
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
-                  {/* 设置区域 */}
                   <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md mb-6">
                     <h3 className="font-semibold text-gray-800 mb-4 text-center">{t.photoSettings}</h3>
-                    
                     <div>
                       <p className="text-sm text-gray-600 mb-2">{t.photoDuration}:</p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { value: 10, label: `10 ${t.seconds}` },
-                          { value: 20, label: `20 ${t.seconds}` },
-                          { value: 60, label: `1 ${t.minute}` },
-                          { value: 300, label: `5 ${t.minutes}` },
-                          { value: 1800, label: `30 ${t.minutes}` },
-                          { value: 0, label: t.permanent }
-                        ].map(option => (
-                          <button
-                            key={option.value}
-                            onClick={() => setPhotoDuration(option.value)}
-                            className={`py-2 px-2 rounded-lg text-xs transition-colors ${
-                              photoDuration === option.value 
-                                ? 'bg-blue-500 text-white' 
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 功能卡片 */}
-                  <div className="grid grid-cols-1 gap-4">
-                    <div 
-                      onClick={() => setCurrentView('photos')}
-                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
-                    >
                       <div className="flex items-center">
                         <Camera className="w-8 h-8 text-pink-500 mr-3" />
                         <div>
@@ -837,13 +650,630 @@
             );
           }
 
-          // 其他视图代码继续...
-          // 为了简化，这里只显示主要的视图，其他视图保持原有逻辑
+          // 照片管理视图
+          if (currentView === 'photos') {
+            return (
+              <div className="min-h-screen bg-gray-50 p-4">
+                <div className="max-w-md mx-auto">
+                  <div className="flex items-center justify-between mb-6 pt-8">
+                    <button
+                      onClick={() => setCurrentView('main')}
+                      className="text-blue-500 font-semibold"
+                    >
+                      {t.back}
+                    </button>
+                    <h2 className="text-xl font-bold">{t.safePhotos}</h2>
+                    <div></div>
+                  </div>
 
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
+                    <h3 className="font-semibold mb-4 text-center">
+                      {language === 'zh' ? '上传安全照片' : 'Upload Safe Photos'}
+                    </h3>
+                    
+                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-gray-700 leading-relaxed text-center">
+                        {language === 'zh' ? 
+                          '📷 上传那些让你感到安全和快乐的照片 - 家人的笑容、朋友的陪伴、美丽的风景，或任何能带给你温暖回忆的瞬间。' : 
+                          '📷 Upload photos that make you feel safe and happy - family smiles, friends\' company, beautiful scenery, or any moments that bring you warm memories.'}
+                      </p>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4 text-center">
+                      {language === 'zh' ? 
+                        '支持格式: JPG, PNG, GIF, WEBP, BMP' : 
+                        'Supported: JPG, PNG, GIF, WEBP, BMP'}
+                    </p>
+                    
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp"
+                        multiple
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files);
+                          files.forEach((file, index) => {
+                            const url = URL.createObjectURL(file);
+                            const newPhoto = {
+                              id: Date.now() + index,
+                              fileName: file.name,
+                              url: url,
+                              fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                              description: { 
+                                zh: file.name.replace(/\.[^/.]+$/, ""), 
+                                en: file.name.replace(/\.[^/.]+$/, "") 
+                              },
+                              isDefault: false
+                            };
+                            setUploadedPhotos(prev => [...prev, newPhoto]);
+                          });
+                          e.target.value = '';
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="photoUpload"
+                      />
+                      <label 
+                        htmlFor="photoUpload"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-pink-300 rounded-lg cursor-pointer hover:border-pink-500 hover:bg-pink-100 transition-all"
+                      >
+                        <Camera className="w-8 h-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-600 text-center px-4">
+                          {language === 'zh' ? 
+                            '点击选择照片或拖拽到这里' : 
+                            'Click to select photos or drag them here'}
+                        </p>
+                      </label>
+                    </div>
+                  </div>
+
+                  <h4 className="font-semibold text-gray-800 mb-4">
+                    {language === 'zh' ? '所有照片' : 'All Photos'}
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    {allPhotos.map((photo, index) => (
+                      <div key={photo.id} className="relative">
+                        <img
+                          src={photo.url}
+                          alt={photo.description[language]}
+                          className="w-full object-cover rounded-lg"
+                          style={{
+                            height: 'auto',
+                            aspectRatio: '4/3',
+                            maxHeight: '200px'
+                          }}
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 rounded-b-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center flex-1 min-w-0">
+                              <span className="bg-pink-500 text-white text-xs px-2 py-1 rounded-full mr-2 flex-shrink-0">
+                                {index + 1}
+                              </span>
+                              <p className="text-xs truncate">{photo.description[language]}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                if (photo.isDefault) {
+                                  setDefaultPhotos(prev => prev.filter(p => p.id !== photo.id));
+                                } else {
+                                  setUploadedPhotos(prev => prev.filter(p => p.id !== photo.id));
+                                  URL.revokeObjectURL(photo.url);
+                                }
+                              }}
+                              className="bg-red-500 text-white w-6 h-6 rounded text-xs hover:bg-red-600 transition-colors flex items-center justify-center ml-2"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {allPhotos.length === 0 && (
+                    <div className="text-center text-gray-500 mt-8">
+                      <Camera className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="mb-2 font-medium">
+                        {language === 'zh' ? '还没有任何照片' : 'No photos yet'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
+          // 音频管理视图
+          if (currentView === 'audios') {
+            return (
+              <div className="min-h-screen bg-gray-50 p-4">
+                <div className="max-w-md mx-auto">
+                  <div className="flex items-center justify-between mb-6 pt-8">
+                    <button
+                      onClick={() => setCurrentView('main')}
+                      className="text-blue-500 font-semibold"
+                    >
+                      {t.back}
+                    </button>
+                    <h2 className="text-xl font-bold">{t.supportSounds}</h2>
+                    <div></div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
+                    <h3 className="font-semibold mb-4 text-center">
+                      {language === 'zh' ? '上传音频文件' : 'Upload Audio Files'}
+                    </h3>
+                    
+                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-gray-700 leading-relaxed text-center">
+                        {language === 'zh' ? 
+                          '💝 使用手机录音记录家人朋友的温暖话语，或上传让你感到安心的音乐。在紧张焦虑时，这些熟悉的声音会像拥抱一样陪伴你，提醒你并不孤单。' : 
+                          '💝 Record warm words from family and friends, or upload music that brings you comfort. During anxious moments, these familiar sounds will embrace you like a hug, reminding you that you are not alone.'}
+                      </p>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4 text-center">
+                      {language === 'zh' ? 
+                        '支持格式: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A' : 
+                        'Supported: MP3, MP4, WAV, FLAC, AAC, AMR, OGG, M4A'}
+                    </p>
+                    
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="audio/*,.mp3,.mp4,.wav,.flac,.aac,.amr,.ogg,.m4a,.wma"
+                        multiple
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files);
+                          files.forEach((file, index) => {
+                            const url = URL.createObjectURL(file);
+                            const newAudio = {
+                              id: Date.now() + index,
+                              fileName: file.name,
+                              audioUrl: url,
+                              fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                              fileType: file.type || 'Unknown'
+                            };
+                            setUploadedAudios(prev => [...prev, newAudio]);
+                          });
+                          e.target.value = '';
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="audioUpload"
+                      />
+                      <label 
+                        htmlFor="audioUpload"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-pink-300 rounded-lg cursor-pointer hover:border-pink-500 hover:bg-pink-100 transition-all"
+                      >
+                        <Mic className="w-8 h-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-600 text-center px-4">
+                          {language === 'zh' ? 
+                            '点击选择音频文件或拖拽到这里' : 
+                            'Click to select audio files or drag them here'}
+                        </p>
+                      </label>
+                    </div>
+                  </div>
+
+                  {uploadedAudios.length > 0 && (
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-gray-800">
+                        {language === 'zh' ? '已上传的音频文件' : 'Uploaded Audio Files'}
+                      </h4>
+                      {uploadedAudios.map((audio, index) => (
+                        <div 
+                          key={audio.id} 
+                          className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center flex-1 min-w-0">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center">
+                                  <span className="bg-pink-500 text-white text-sm px-3 py-1 rounded-full mr-3 flex-shrink-0">
+                                    {index + 1}
+                                  </span>
+                                  <p className="font-semibold text-sm truncate">{audio.fileName}</p>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">{audio.fileSize} • {audio.fileType}</p>
+                              </div>
+                            </div>
+                            <div className="flex space-x-2 ml-2 flex-shrink-0">
+                              <button
+                                onClick={() => playAudio(audio.audioUrl)}
+                                className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors"
+                              >
+                                {language === 'zh' ? '播放' : 'Play'}
+                              </button>
+                              {isAudioPlaying && (
+                                <button
+                                  onClick={stopAudio}
+                                  className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600 transition-colors"
+                                >
+                                  {language === 'zh' ? '停止' : 'Stop'}
+                                </button>
+                              )}
+                              <button
+                                onClick={() => {
+                                  setUploadedAudios(prev => prev.filter(a => a.id !== audio.id));
+                                  URL.revokeObjectURL(audio.audioUrl);
+                                }}
+                                className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors"
+                              >
+                                删
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {uploadedAudios.length === 0 && (
+                    <div className="text-center text-gray-500 mt-8">
+                      <Mic className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="mb-2 font-medium">
+                        {language === 'zh' ? '还没有上传任何音频文件' : 'No audio files uploaded yet'}
+                      </p>
+                      <p className="text-sm px-4">
+                        {language === 'zh' ? 
+                          '开始收集那些能给你力量的声音吧 - 也许是妈妈的叮咛，朋友的鼓励，或是你最爱的歌曲' : 
+                          'Start collecting sounds that give you strength - maybe mom\'s caring words, a friend\'s encouragement, or your favorite song'}
+                      </p>
+                    </div>
+                  )}
+
+                  <audio 
+                    ref={audioRef} 
+                    style={{ display: 'none' }} 
+                    onEnded={() => setIsAudioPlaying(false)}
+                    onPause={() => setIsAudioPlaying(false)}
+                    onPlay={() => setIsAudioPlaying(true)}
+                    preload="auto"
+                  />
+                </div>
+              </div>
+            );
+          }
+
+          // 音频播放视图
+          if (currentView === 'audio') {
+            if (uploadedAudios.length === 0) {
+              return (
+                <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 p-4 flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-md">
+                    <Mic className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+                    <h2 className="text-xl font-bold mb-4">
+                      {language === 'zh' ? '还没有音频文件' : 'No Audio Files'}
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      {language === 'zh' ? 
+                        '请先上传一些音频文件来使用语音功能' : 
+                        'Please upload some audio files to use voice feature'}
+                    </p>
+                    <button
+                      onClick={() => setCurrentView('audios')}
+                      className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
+                    >
+                      {language === 'zh' ? '去上传文件' : 'Upload Files'}
+                    </button>
+                  </div>
+                </div>
+              );
+            }
+
+            const currentAudio = uploadedAudios[currentIndex] || uploadedAudios[0];
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 p-4 flex items-center justify-center">
+                <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-md">
+                  <Mic className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+                  <h2 className="text-xl font-bold mb-4">{currentAudio.fileName}</h2>
+                  <p className="text-sm text-gray-500 mb-2">{currentAudio.fileSize}</p>
+                  
+                  <p className="text-sm text-blue-600 mb-4">
+                    {language === 'zh' ? 
+                      `播放进度: ${currentIndex + 1} / ${uploadedAudios.length}` : 
+                      `Playing: ${currentIndex + 1} / ${uploadedAudios.length}`}
+                  </p>
+                  
+                  {isAudioPlaying && (
+                    <div className="mb-4 text-green-600">
+                      <p className="text-sm">
+                        {language === 'zh' ? '🎵 正在播放...' : '🎵 Playing...'}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-center space-x-4 mb-4">
+                    {!isAudioPlaying && (
+                      <button
+                        onClick={() => {
+                          if (audioRef.current && currentAudio.audioUrl) {
+                            audioRef.current.src = currentAudio.audioUrl;
+                            audioRef.current.play().then(() => {
+                              setIsAudioPlaying(true);
+                            });
+                          }
+                        }}
+                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
+                      >
+                        {language === 'zh' ? '播放' : 'Play'}
+                      </button>
+                    )}
+                    {isAudioPlaying && (
+                      <button
+                        onClick={stopAudio}
+                        className="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors"
+                      >
+                        {language === 'zh' ? '停止' : 'Stop'}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        if (audioRef.current) {
+                          audioRef.current.pause();
+                          audioRef.current.currentTime = 0;
+                          setIsAudioPlaying(false);
+                        }
+                        setCurrentView('main');
+                      }}
+                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      {language === 'zh' ? '返回' : 'Back'}
+                    </button>
+                  </div>
+
+                  {uploadedAudios.length > 1 && (
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => {
+                          const prevIndex = (currentIndex - 1 + uploadedAudios.length) % uploadedAudios.length;
+                          setCurrentIndex(prevIndex);
+                          const prevAudio = uploadedAudios[prevIndex];
+                          if (prevAudio && audioRef.current) {
+                            audioRef.current.src = prevAudio.audioUrl;
+                            audioRef.current.play();
+                          }
+                        }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
+                      >
+                        {language === 'zh' ? '← 上一首' : '← Previous'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          playNextAudio();
+                        }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
+                      >
+                        {language === 'zh' ? '下一首 →' : 'Next →'}
+                      </button>
+                    </div>
+                  )}
+
+                  <audio 
+                    ref={audioRef} 
+                    style={{ display: 'none' }} 
+                    onEnded={playNextAudio}
+                    onPause={() => setIsAudioPlaying(false)}
+                    onPlay={() => setIsAudioPlaying(true)}
+                    preload="auto"
+                  />
+                </div>
+              </div>
+            );
+          }
+
+          // 记忆管理视图
+          if (currentView === 'memories') {
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-4">
+                <div className="max-w-md mx-auto pt-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <button
+                      onClick={() => setCurrentView('main')}
+                      className="text-purple-500 font-semibold"
+                    >
+                      {t.back}
+                    </button>
+                    <h2 className="text-xl font-bold text-center">{t.yourMemories}</h2>
+                    <div></div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-6 rounded-xl shadow-md mb-6">
+                    <h3 className="font-semibold mb-4 text-center">
+                      {language === 'zh' ? '✨ 心灵笔记 ✨' : '✨ Heart Notes ✨'}
+                    </h3>
+                    
+                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-gray-700 leading-relaxed text-center">
+                        {language === 'zh' ? 
+                          '💝 在这里写下那些温暖的话语，记录美好的时刻，或是给自己的鼓励。在需要的时候，这些文字会成为你内心的光芒。' : 
+                          '💝 Write warm words here, record beautiful moments, or give yourself encouragement. When needed, these words will become the light in your heart.'}
+                      </p>
+                    </div>
+                    
+                    <textarea
+                      value={notepadContent}
+                      onChange={(e) => setNotepadContent(e.target.value)}
+                      placeholder={language === 'zh' ? 
+                        '在这里写下你的美好回忆、成就、感谢的话语，或任何能让你感到温暖的文字...\n\n例如：\n• 今天我完成了一个重要的项目\n• 朋友给了我很大的支持\n• 我比昨天的自己更强大了' : 
+                        'Write your beautiful memories, achievements, words of gratitude, or any text that makes you feel warm...\n\nFor example:\n• Today I completed an important project\n• Friends gave me great support\n• I am stronger than yesterday'}
+                      className="w-full h-48 p-4 border border-pink-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent bg-white shadow-inner"
+                      style={{
+                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                    />
+                    
+                    <div className="mt-3 text-center">
+                      <p className="text-xs text-gray-500">
+                        {language === 'zh' ? 
+                          `已写入 ${notepadContent.length} 个字符` : 
+                          `${notepadContent.length} characters written`}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-800">
+                      {language === 'zh' ? '所有美好回忆' : 'All Beautiful Memories'}
+                    </h4>
+                    {allMemories.map((memory, index) => (
+                      <div 
+                        key={memory.id} 
+                        className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md relative"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center mb-2">
+                              <span className="bg-pink-500 text-white text-sm px-3 py-1 rounded-full mr-3 flex-shrink-0">
+                                {index + 1}
+                              </span>
+                              <h3 className="font-semibold text-lg">{memory.title[language]}</h3>
+                            </div>
+                            <p className="text-gray-700 text-sm leading-relaxed">{memory.content[language]}</p>
+                          </div>
+                          <div className="ml-2 flex-shrink-0">
+                            {memory.isNotepad && (
+                              <button
+                                onClick={() => setNotepadContent('')}
+                                className="bg-yellow-500 text-white px-3 py-1 rounded text-xs hover:bg-yellow-600 transition-colors"
+                              >
+                                {language === 'zh' ? '清空' : 'Clear'}
+                              </button>
+                            )}
+                            {memory.isDefault && (
+                              <button
+                                onClick={() => setDefaultMemories(prev => prev.filter(m => m.id !== memory.id))}
+                                className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition-colors"
+                              >
+                                {language === 'zh' ? '删除' : 'Delete'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {allMemories.length === 0 && (
+                    <div className="text-center text-gray-500 mt-8">
+                      <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="mb-2 font-medium">
+                        {language === 'zh' ? '还没有任何回忆记录' : 'No memory records yet'}
+                      </p>
+                      <p className="text-sm px-4">
+                        {language === 'zh' ? 
+                          '开始记录那些让你感到骄傲和快乐的时刻吧' : 
+                          'Start recording moments that make you feel proud and happy'}
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={stopSOS}
+                    className="w-full mt-6 bg-purple-500 text-white py-3 rounded-lg font-semibold"
+                  >
+                    {t.returnHome}
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          // 记忆幻灯片视图
+          if (currentView === 'memories-slideshow') {
+            if (allMemories.length === 0) {
+              return (
+                <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-4 flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-md">
+                    <MessageCircle className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+                    <h2 className="text-xl font-bold mb-4">
+                      {language === 'zh' ? '还没有回忆记录' : 'No Memory Records'}
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                      {language === 'zh' ? 
+                        '请先上传一些美好回忆来使用此功能' : 
+                        'Please upload some wonderful memories to use this feature'}
+                    </p>
+                    <button
+                      onClick={() => setCurrentView('memories')}
+                      className="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 transition-colors"
+                    >
+                      {language === 'zh' ? '去上传回忆' : 'Upload Memories'}
+                    </button>
+                  </div>
+                </div>
+              );
+            }
+
+            const currentMemory = allMemories[currentIndex] || allMemories[0];
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100 p-4 flex items-center justify-center">
+                <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-8 rounded-xl shadow-lg text-center max-w-lg">
+                  <MessageCircle className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+                  <h2 className="text-xl font-bold mb-4">{currentMemory.title[language]}</h2>
+                  
+                  <div className="bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 p-6 rounded-lg mb-6 max-h-64 overflow-y-auto">
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-left">
+                      {currentMemory.content[language]}
+                    </p>
+                  </div>
+                  
+                  <p className="text-sm text-purple-600 mb-4">
+                    {language === 'zh' ? 
+                      `回忆: ${currentIndex + 1} / ${allMemories.length}` : 
+                      `Memory: ${currentIndex + 1} / ${allMemories.length}`}
+                  </p>
+                  
+                  <div className="flex justify-center space-x-4 mb-4">
+                    <button
+                      onClick={stopSOS}
+                      className="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 transition-colors"
+                    >
+                      {language === 'zh' ? '停止' : 'Stop'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCurrentView('main');
+                      }}
+                      className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      {language === 'zh' ? '返回' : 'Back'}
+                    </button>
+                  </div>
+
+                  {allMemories.length > 1 && (
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => {
+                          const prevIndex = (currentIndex - 1 + allMemories.length) % allMemories.length;
+                          setCurrentIndex(prevIndex);
+                        }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
+                      >
+                        {language === 'zh' ? '← 上一个' : '← Previous'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          const nextIndex = (currentIndex + 1) % allMemories.length;
+                          setCurrentIndex(nextIndex);
+                        }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors"
+                      >
+                        {language === 'zh' ? '下一个 →' : 'Next →'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
+          // 默认返回主界面
           return (
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 flex items-center justify-center">
               <div className="text-center">
-                <h2 className="text-xl font-bold mb-4">功能开发中...</h2>
+                <h2 className="text-xl font-bold mb-4">加载中...</h2>
                 <button
                   onClick={() => setCurrentView('main')}
                   className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
@@ -863,13 +1293,11 @@
         let deferredPrompt;
         let installPromptShown = false;
 
-        // Check if app is already installed
         function isAppInstalled() {
             return window.matchMedia('(display-mode: standalone)').matches || 
                    window.navigator.standalone === true;
         }
 
-        // Show install prompt
         function showInstallPrompt() {
             if (!installPromptShown && !isAppInstalled() && deferredPrompt) {
                 const prompt = document.getElementById('install-prompt');
@@ -880,7 +1308,6 @@
             }
         }
 
-        // Install app function
         async function installApp() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -891,7 +1318,6 @@
             }
         }
 
-        // Dismiss install prompt
         function dismissInstall() {
             const prompt = document.getElementById('install-prompt');
             if (prompt) {
@@ -899,20 +1325,17 @@
             }
         }
 
-        // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             console.log('Install prompt captured');
         });
 
-        // Listen for app installed event
         window.addEventListener('appinstalled', (evt) => {
             console.log('App was installed');
             dismissInstall();
         });
 
-        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', async () => {
                 try {
@@ -940,7 +1363,6 @@
             });
         }
 
-        // Handle share target
         if ('serviceWorker' in navigator && 'share_target' in navigator) {
             navigator.serviceWorker.addEventListener('message', event => {
                 if (event.data && event.data.type === 'SHARED_FILES') {
@@ -949,7 +1371,6 @@
             });
         }
 
-        // Prevent zoom on double tap (iOS)
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             const now = (new Date()).getTime();
@@ -959,14 +1380,12 @@
             lastTouchEnd = now;
         }, false);
 
-        // Handle visibility change
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 console.log('App became visible');
             }
         });
 
-        // Handle network status
         window.addEventListener('online', () => {
             console.log('App is online');
         });
@@ -975,7 +1394,6 @@
             console.log('App is offline');
         });
 
-        // Performance monitoring
         window.addEventListener('load', () => {
             if ('performance' in window) {
                 const perfData = performance.getEntriesByType('navigation')[0];
@@ -983,7 +1401,6 @@
             }
         });
 
-        // Error handling
         window.addEventListener('error', (event) => {
             console.error('Global error:', event.error);
         });
@@ -994,4 +1411,34 @@
         });
     </script>
 </body>
-</html>
+</html>grid grid-cols-3 gap-2">
+                        {[
+                          { value: 10, label: `10 ${t.seconds}` },
+                          { value: 20, label: `20 ${t.seconds}` },
+                          { value: 60, label: `1 ${t.minute}` },
+                          { value: 300, label: `5 ${t.minutes}` },
+                          { value: 1800, label: `30 ${t.minutes}` },
+                          { value: 0, label: t.permanent }
+                        ].map(option => (
+                          <button
+                            key={option.value}
+                            onClick={() => setPhotoDuration(option.value)}
+                            className={`py-2 px-2 rounded-lg text-xs transition-colors ${
+                              photoDuration === option.value 
+                                ? 'bg-blue-500 text-white' 
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    <div 
+                      onClick={() => setCurrentView('photos')}
+                      className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 p-4 rounded-xl shadow-md cursor-pointer hover:shadow-lg hover:from-pink-100 hover:to-rose-100 transition-all"
+                    >
+                      <div className="
