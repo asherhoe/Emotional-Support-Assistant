@@ -19,6 +19,13 @@ const urlsToCache = [
   'https://cdn.tailwindcss.com'
 ];
 
+// 需要缓存的 Unsplash 图片
+const imagesToCache = [
+  'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&h=600&fit=crop&q=80'
+];
+
 // Install event - cache resources
 self.addEventListener('install', event => {
   console.log('Service Worker: Install');
@@ -26,7 +33,18 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Service Worker: Caching files');
-        return cache.addAll(urlsToCache);
+        // 先缓存主要文件
+        return cache.addAll(urlsToCache)
+          .then(() => {
+            // 然后尝试缓存图片，但不让图片失败影响整体安装
+            return Promise.all(
+              imagesToCache.map(url => 
+                cache.add(url).catch(err => {
+                  console.warn('Failed to cache image:', url, err);
+                })
+              )
+            );
+          });
       })
       .then(() => {
         console.log('Service Worker: Cache complete');
@@ -60,45 +78,78 @@ self.addEventListener('activate', event => {
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', event => {
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin) && 
-      !event.request.url.startsWith('https://unpkg.com') &&
-      !event.request.url.startsWith('https://cdn.tailwindcss.com') &&
-      !event.request.url.startsWith('https://images.unsplash.com')) {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // 对于跨域请求的特殊处理
+  if (url.origin !== location.origin) {
+    // 处理 CDN 资源
+    if (url.origin === 'https://unpkg.com' || 
+        url.origin === 'https://cdn.tailwindcss.com' ||
+        url.origin === 'https://images.unsplash.com') {
+      event.respondWith(
+        caches.match(request)
+          .then(response => {
+            if (response) {
+              return response;
+            }
+            // 如果没有缓存，从网络获取并缓存
+            return fetch(request).then(response => {
+              // 不缓存非成功响应
+              if (!response || response.status !== 200) {
+                return response;
+              }
+              
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME)
+                .then(cache => {
+                  cache.put(request, responseToCache);
+                });
+              
+              return response;
+            }).catch(() => {
+              // 如果是图片请求失败，可以返回一个默认图片
+              if (request.destination === 'image') {
+                // 返回缓存的任意图片作为后备
+                return caches.match(imagesToCache[0]);
+              }
+            });
+          })
+      );
+      return;
+    }
+    // 其他跨域请求直接从网络获取
     return;
   }
 
+  // 本域请求 - 优先缓存策略
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then(response => {
-        // Return cached version or fetch from network
         if (response) {
-          console.log('Service Worker: Serving from cache', event.request.url);
+          console.log('Service Worker: Serving from cache', request.url);
           return response;
         }
         
-        console.log('Service Worker: Fetching from network', event.request.url);
-        return fetch(event.request).then(response => {
-          // Check if we received a valid response
+        console.log('Service Worker: Fetching from network', request.url);
+        return fetch(request).then(response => {
+          // 检查是否收到有效响应
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
 
-          // Clone the response
           const responseToCache = response.clone();
-
-          // Add to cache for future use
           caches.open(CACHE_NAME)
             .then(cache => {
-              cache.put(event.request, responseToCache);
+              cache.put(request, responseToCache);
             });
 
           return response;
         });
       })
       .catch(() => {
-        // If both cache and network fail, return offline page for navigation requests
-        if (event.request.destination === 'document') {
+        // 如果都失败了，对于导航请求返回离线页面
+        if (request.destination === 'document') {
           return caches.match('/index.html');
         }
       })
@@ -111,16 +162,14 @@ self.addEventListener('sync', event => {
   
   if (event.tag === 'background-sync') {
     event.waitUntil(
-      // Handle any background sync tasks here
       doBackgroundSync()
     );
   }
 });
 
 async function doBackgroundSync() {
-  // Implement any background sync logic here
-  // For example, sync user data when back online
   console.log('Service Worker: Performing background sync');
+  // 可以在这里实现离线时保存的数据同步
 }
 
 // Push notification handling
@@ -128,7 +177,7 @@ self.addEventListener('push', event => {
   console.log('Service Worker: Push received');
   
   const options = {
-    body: event.data ? event.data.text() : 'You have a new message',
+    body: event.data ? event.data.text() : '记得照顾好自己 💝',
     icon: '/icon-192x192.png',
     badge: '/icon-72x72.png',
     vibrate: [100, 50, 100],
@@ -139,19 +188,19 @@ self.addEventListener('push', event => {
     actions: [
       {
         action: 'explore',
-        title: 'Open App',
+        title: '打开应用',
         icon: '/icon-192x192.png'
       },
       {
         action: 'close',
-        title: 'Close',
+        title: '关闭',
         icon: '/icon-192x192.png'
       }
     ]
   };
 
   event.waitUntil(
-    self.registration.showNotification('Emotional Support Assistant', options)
+    self.registration.showNotification('情绪支持助手', options)
   );
 });
 
@@ -162,15 +211,12 @@ self.addEventListener('notificationclick', event => {
   event.notification.close();
 
   if (event.action === 'explore') {
-    // Open the app
     event.waitUntil(
       clients.openWindow('/')
     );
   } else if (event.action === 'close') {
-    // Just close the notification
     return;
   } else {
-    // Default action - open the app
     event.waitUntil(
       clients.openWindow('/')
     );
